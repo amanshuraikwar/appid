@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsPadding
 import io.github.amanshuraikwar.appid.ui.theme.disabled
+import io.github.amanshuraikwar.appid.ui.theme.outline
 
 @Composable
 fun SearchBar(
@@ -104,11 +105,11 @@ fun SearchBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 56.dp, end = 16.dp)
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 4.dp)
                         .clip(RoundedCornerShape(50))
-                        .background(MaterialTheme.colors.primary.disabled)
+                        .background(MaterialTheme.colors.outline)
                         .padding(start = 16.dp, end = 56.dp)
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 12.dp)
                 ) {
                     innerTextField()
                 }

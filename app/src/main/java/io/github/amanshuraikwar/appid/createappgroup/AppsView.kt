@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -28,11 +28,11 @@ import io.github.amanshuraikwar.appid.ui.theme.medium
 @Composable
 internal fun AppsView(
     modifier: Modifier = Modifier,
-    state: AddAppGroupState,
+    state: CreateAppGroupState,
 ) {
     Column(modifier) {
         when (state) {
-            AddAppGroupState.Loading -> {
+            CreateAppGroupState.Loading -> {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -44,7 +44,7 @@ internal fun AppsView(
                     color = MaterialTheme.colors.onBackground
                 )
             }
-            is AddAppGroupState.Success -> {
+            is CreateAppGroupState.Success -> {
                 Box(
                     Modifier.fillMaxSize()
                 ) {
@@ -67,7 +67,7 @@ internal fun AppsView(
                     }
                 }
             }
-            is AddAppGroupState.NoApps -> {
+            is CreateAppGroupState.NoApps -> {
                 Text(
                     modifier = Modifier.padding(16.dp),
                     text = "No matching apps!",

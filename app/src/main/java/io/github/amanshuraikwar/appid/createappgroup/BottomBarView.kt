@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +24,7 @@ import io.github.amanshuraikwar.appid.ui.theme.medium
 @Composable
 internal fun BottomBarView(
     modifier: Modifier = Modifier,
-    state: AddAppGroupState,
+    state: CreateAppGroupState,
     onCreateGroupClick: (String) -> Unit,
 ) {
     Box(
@@ -43,10 +43,10 @@ internal fun BottomBarView(
                     }
                 ),
             text = when (state) {
-                AddAppGroupState.Loading -> ""
-                is AddAppGroupState.NoApps -> ""
-                is AddAppGroupState.Success -> {
-                    if (state.canCreateAppGroup is AddAppGroupState.CanCreateAppGroup.No) {
+                CreateAppGroupState.Loading -> ""
+                is CreateAppGroupState.NoApps -> ""
+                is CreateAppGroupState.Success -> {
+                    if (state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.No) {
                         state.canCreateAppGroup.why
                     } else {
                         ""
@@ -54,7 +54,7 @@ internal fun BottomBarView(
                 }
             },
             color = MaterialTheme.colors.error,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body2
         )
 
         Surface(
@@ -67,8 +67,8 @@ internal fun BottomBarView(
                     horizontal = 16.dp,
                     vertical = 12.dp
                 ),
-            color = if (state is AddAppGroupState.Success
-                && state.canCreateAppGroup is AddAppGroupState.CanCreateAppGroup.Yes
+            color = if (state is CreateAppGroupState.Success
+                && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
             ) {
                 MaterialTheme.colors.primary
             } else {
@@ -79,8 +79,8 @@ internal fun BottomBarView(
             Text(
                 modifier = Modifier
                     .let {
-                        if (state is AddAppGroupState.Success
-                            && state.canCreateAppGroup is AddAppGroupState.CanCreateAppGroup.Yes
+                        if (state is CreateAppGroupState.Success
+                            && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
                         ) {
                             it.clickable {
                                 onCreateGroupClick(state.packageName)
@@ -95,8 +95,8 @@ internal fun BottomBarView(
                     ),
                 text = "Create Group",
                 style = MaterialTheme.typography.button,
-                color = if (state is AddAppGroupState.Success
-                    && state.canCreateAppGroup is AddAppGroupState.CanCreateAppGroup.Yes
+                color = if (state is CreateAppGroupState.Success
+                    && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
                 ) {
                     MaterialTheme.colors.onPrimary
                 } else {

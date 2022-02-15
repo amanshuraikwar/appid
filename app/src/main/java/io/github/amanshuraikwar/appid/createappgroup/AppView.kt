@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.ui.AppIconView
+import io.github.amanshuraikwar.appid.ui.theme.packageName
 
 @Composable
 internal fun AppView(
@@ -49,7 +50,7 @@ internal fun AppView(
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = app.packageName,
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.packageName
                 )
 
                 Text(

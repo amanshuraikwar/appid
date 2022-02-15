@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -28,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsPadding
-import io.github.amanshuraikwar.appid.addappgroup.AddAppGroupView
+import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 
 @Composable
@@ -52,12 +53,12 @@ fun HomeView() {
             }
 
             BackHandler(
-                enabled = state == HomeViewState.AddAppGroup,
+                enabled = state == HomeViewState.CreateAppGroup,
                 onBack = vm::onBackClick
             )
 
             FloatingActionButton(
-                shape = MaterialTheme.shapes.small,
+                shape = RoundedCornerShape(50),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
@@ -91,7 +92,7 @@ fun HomeView() {
             }
 
             AnimatedVisibility(
-                visible = state == HomeViewState.AddAppGroup,
+                visible = state == HomeViewState.CreateAppGroup,
                 enter = slideInVertically {
                     it
                 },
@@ -99,7 +100,7 @@ fun HomeView() {
                     it
                 }
             ) {
-                AddAppGroupView(
+                CreateAppGroupView(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background),

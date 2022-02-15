@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,14 +21,14 @@ import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.SearchBar
 
 @Composable
-fun AddAppGroupView(
+fun CreateAppGroupView(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
 ) {
-    val vm: AddAppGroupViewModel = viewModel()
+    val vm: CreateAppGroupViewModel = viewModel()
     val state by vm.state.collectAsState()
 
-    AddAppGroupView(
+    CreateAppGroupView(
         modifier = modifier,
         state = state,
         onBackClick = onBackClick,
@@ -41,9 +41,9 @@ fun AddAppGroupView(
 }
 
 @Composable
-internal fun AddAppGroupView(
+internal fun CreateAppGroupView(
     modifier: Modifier = Modifier,
-    state: AddAppGroupState,
+    state: CreateAppGroupState,
     onBackClick: () -> Unit,
     onSearch: (query: String) -> Unit,
     onCreateGroupClick: (String) -> Unit,
