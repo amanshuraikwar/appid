@@ -1,5 +1,6 @@
 package io.github.amanshuraikwar.appid.ui.theme
 
+import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 
 val blueLighter = Color(0xFF64B5F6)
@@ -22,3 +23,6 @@ val Color.medium: Color
 
 val Color.disabled: Color
     get() = this.copy(alpha = 0.38f)
+
+val Colors.outline: Color
+    get() = this.onSurface.copy(alpha = 0.12f)

@@ -1,19 +1,19 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import io.github.amanshuraikwar.appid.model.App
 
-internal sealed class AddAppGroupState {
-    object Loading : AddAppGroupState()
+internal sealed class CreateAppGroupState {
+    object Loading : CreateAppGroupState()
 
     data class NoApps(
         val packageName: String,
-    ) : AddAppGroupState()
+    ) : CreateAppGroupState()
 
     data class Success(
         val packageName: String,
         val canCreateAppGroup: CanCreateAppGroup,
         val apps: List<App>
-    ) : AddAppGroupState()
+    ) : CreateAppGroupState()
 
     sealed class CanCreateAppGroup {
         object Yes : CanCreateAppGroup()

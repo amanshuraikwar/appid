@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.addappgroup
+package io.github.amanshuraikwar.appid.createappgroup
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -15,15 +15,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private const val TAG = "HomeViewModel"
+private const val TAG = "CreateAppGroupViewModel"
 
 @HiltViewModel
-internal class AddAppGroupViewModel @Inject constructor(
+internal class CreateAppGroupViewModel @Inject constructor(
     private val appIdRepository: AppIdRepository
 ) : ViewModel() {
-    private val _state: MutableStateFlow<AddAppGroupState> =
-        MutableStateFlow(AddAppGroupState.Loading)
-    val state: StateFlow<AddAppGroupState> = _state
+    private val _state: MutableStateFlow<CreateAppGroupState> =
+        MutableStateFlow(CreateAppGroupState.Loading)
+    val state: StateFlow<CreateAppGroupState> = _state
 
     private val searchFlow = MutableSharedFlow<String>(
         replay = 0,
@@ -40,28 +40,28 @@ internal class AddAppGroupViewModel @Inject constructor(
                     withContext(Dispatchers.Main.immediate) {
                         _state.emit(
                             if (apps.isEmpty()) {
-                                AddAppGroupState.NoApps(
+                                CreateAppGroupState.NoApps(
                                     packageName = query,
                                 )
                             } else {
-                                AddAppGroupState.Success(
+                                CreateAppGroupState.Success(
                                     packageName = query,
                                     apps = apps,
                                     canCreateAppGroup = when {
                                         query.isEmpty() -> {
-                                            AddAppGroupState.CanCreateAppGroup.No(
+                                            CreateAppGroupState.CanCreateAppGroup.No(
                                                 "Search for a package name " +
                                                         "to create an app group."
                                             )
                                         }
                                         apps.size > 20 -> {
-                                            AddAppGroupState.CanCreateAppGroup.No(
+                                            CreateAppGroupState.CanCreateAppGroup.No(
                                                 "We cannot create an app group " +
                                                         "of more than 20 apps."
                                             )
                                         }
                                         else -> {
-                                            AddAppGroupState.CanCreateAppGroup.Yes
+                                            CreateAppGroupState.CanCreateAppGroup.Yes
                                         }
                                     }
                                 )

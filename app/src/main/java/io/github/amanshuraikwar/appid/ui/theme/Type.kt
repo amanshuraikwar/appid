@@ -70,3 +70,10 @@ val Typography.appName: TextStyle
         fontWeight = FontWeight.Bold,
         fontFeatureSettings = "smcp"
     )
+
+val Typography.packageName: TextStyle
+    get() = body2.copy(
+        fontFamily = RobotoMonoFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontFeatureSettings = "smcp"
+    )
