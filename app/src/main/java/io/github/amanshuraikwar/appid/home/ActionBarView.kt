@@ -14,8 +14,11 @@ import io.github.amanshuraikwar.appid.R
 import io.github.amanshuraikwar.appid.ui.theme.appName
 
 @Composable
-fun ActionBarView() {
+fun ActionBarView(
+    modifier: Modifier = Modifier,
+) {
     Surface(
+        modifier = modifier,
         color = MaterialTheme.colors.surface,
         elevation = 8.dp
     ) {

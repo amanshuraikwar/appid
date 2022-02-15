@@ -66,6 +66,7 @@ internal fun AppGroupsView(
         }
         is AppGroupsState.Success -> {
             LazyColumn(
+                modifier = modifier,
                 contentPadding = rememberInsetsPaddingValues(
                     insets = LocalWindowInsets.current.navigationBars,
                     applyTop = false,
