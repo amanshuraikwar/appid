@@ -25,15 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
-import io.github.amanshuraikwar.appid.R
 import io.github.amanshuraikwar.appid.addappgroup.AddAppGroupView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
-import io.github.amanshuraikwar.appid.ui.theme.appName
 
 @Composable
 fun HomeView() {
