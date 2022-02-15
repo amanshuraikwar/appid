@@ -8,6 +8,7 @@ sealed class HomeViewState {
     object NoApps : HomeViewState()
 
     data class Success(
+        val packageName: String,
         val apps: List<App>
     ) : HomeViewState()
 }

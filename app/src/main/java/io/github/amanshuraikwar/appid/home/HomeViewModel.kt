@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(
                                 HomeViewState.NoApps
                             } else {
                                 HomeViewState.Success(
+                                    packageName = query,
                                     apps = apps
                                 )
                             }
@@ -59,6 +60,12 @@ class HomeViewModel @Inject constructor(
         Log.d(TAG, "onSearch: $query")
         viewModelScope.launch {
             _searchFlow.tryEmit(query)
+        }
+    }
+
+    fun onCreateGroupClick(packageName: String) {
+        viewModelScope.launch {
+            appIdRepository.addAppGroup(packageName)
         }
     }
 }

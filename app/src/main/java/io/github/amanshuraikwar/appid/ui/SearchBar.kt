@@ -1,5 +1,6 @@
 package io.github.amanshuraikwar.appid.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
@@ -33,11 +35,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.ui.theme.disabled
 
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
     onSearch: (query: String) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     Surface(
         modifier,
@@ -99,20 +103,27 @@ fun SearchBar(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 72.dp, vertical = 16.dp)
+                        .padding(start = 56.dp, end = 16.dp)
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colors.primary.disabled)
+                        .padding(start = 16.dp, end = 56.dp)
+                        .padding(vertical = 8.dp)
                 ) {
                     innerTextField()
                 }
             }
 
             Icon(
-                imageVector = Icons.Rounded.Search,
-                contentDescription = "Search",
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = "Back",
                 tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .clip(shape = MaterialTheme.shapes.small)
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .padding(4.dp)
+                    .clip(shape = RoundedCornerShape(100))
+                    .clickable(onClick = onBackClick)
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
                     .size(24.dp)
             )
 
@@ -122,12 +133,13 @@ fun SearchBar(
                     contentDescription = "Clear",
                     tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier
+                        .padding(end = 16.dp)
                         .align(Alignment.CenterEnd)
                         .clip(shape = RoundedCornerShape(100))
                         .clickable {
                             searchString = ""
                         }
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(horizontal = 12.dp, vertical = 12.dp)
                         .size(24.dp)
                 )
             }
