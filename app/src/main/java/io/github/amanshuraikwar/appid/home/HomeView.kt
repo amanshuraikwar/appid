@@ -1,12 +1,14 @@
 package io.github.amanshuraikwar.appid.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,16 +23,21 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.R
+import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 import io.github.amanshuraikwar.appid.ui.SearchBar
+import io.github.amanshuraikwar.appid.ui.theme.appName
 
 @Composable
 fun HomeView(
@@ -39,32 +46,79 @@ fun HomeView(
     val state: HomeViewState by viewModel.state.collectAsState()
     val search: String by viewModel.searchFlow.collectAsState("")
 
+
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         Box {
-            Box(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                AppsView(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(top = 56.dp),
-                    state = state
-                )
+                Surface(
+                    color = MaterialTheme.colors.surface,
+                    elevation = 8.dp
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(16.dp),
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.appName,
+                    )
+                }
 
-                SearchBar(
+                AppGroupsView(
                     modifier = Modifier,
-                    onSearch = viewModel::onSearch
                 )
             }
 
+            var visible by remember {
+                mutableStateOf(false)
+            }
+
+            BackHandler(enabled = visible) {
+                visible = false
+            }
+
+            FloatingActionButton(
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = 16.dp),
+                backgroundColor = MaterialTheme.colors.primary,
+                onClick = { visible = true }
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "Add",
+                        tint = MaterialTheme.colors.onPrimary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .clip(shape = MaterialTheme.shapes.small)
+                            .padding(vertical = 16.dp)
+                            .padding(start = 16.dp)
+                            .size(24.dp)
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(vertical = 16.dp)
+                            .padding(start = 12.dp, end = 16.dp),
+                        text = "Create App Group",
+                        style = MaterialTheme.typography.button,
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+            }
+
             AnimatedVisibility(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                visible = state is HomeViewState.Success
-                        && (state as HomeViewState.Success).apps.size <= 16
-                        && search.isNotEmpty(),
+                visible = visible,
                 enter = slideInVertically {
                     it
                 },
@@ -72,57 +126,17 @@ fun HomeView(
                     it
                 }
             ) {
-                val navigationBarPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyTop = false,
-                    applyBottom = true,
-                ).calculateBottomPadding()
-
-                val imePadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.ime,
-                    applyTop = false,
-                    applyBottom = true,
-                ).calculateBottomPadding()
-
-                val bottomPadding: Dp by animateDpAsState(
-                    targetValue = if (imePadding == 0.dp) {
-                        navigationBarPadding + 16.dp
-                    } else {
-                        imePadding + 16.dp
+                AppsView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.background),
+                    onCreateGroupClick = { packageName ->
+                        visible  = false
+                    },
+                    onBackClick = {
+                        visible = false
                     }
                 )
-
-                FloatingActionButton(
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier
-                        .padding(bottom = bottomPadding),
-                    backgroundColor = MaterialTheme.colors.primary,
-                    onClick = { /*TODO*/ }
-                ) {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Rounded.Add,
-                            contentDescription = "Add",
-                            tint = MaterialTheme.colors.onPrimary,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .clip(shape = MaterialTheme.shapes.small)
-                                .padding(vertical = 16.dp)
-                                .padding(start = 16.dp)
-                                .size(24.dp)
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(vertical = 16.dp)
-                                .padding(start = 12.dp, end = 16.dp),
-                            text = "Create App Group",
-                            style = MaterialTheme.typography.button,
-                            color = MaterialTheme.colors.onPrimary
-                        )
-                    }
-                }
             }
         }
     }

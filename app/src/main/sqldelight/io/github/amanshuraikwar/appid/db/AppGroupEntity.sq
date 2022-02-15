@@ -1,0 +1,14 @@
+CREATE TABLE AppGroupEntity (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    packageName TEXT NOT NULL
+);
+
+insert:
+INSERT INTO AppGroupEntity(packageName)
+VALUES(:packageName);
+
+deleteAll:
+DELETE FROM AppGroupEntity;
+
+findAll:
+SELECT * FROM AppGroupEntity;

@@ -5,6 +5,15 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.squareup.sqldelight'
+}
+
+sqldelight {
+    AppIdDb {
+        packageName = "io.github.amanshuraikwar.appid.db"
+        sourceFolders = ["sqldelight"]
+        version = 1
+    }
 }
 
 android {
@@ -78,4 +87,6 @@ dependencies {
     kapt Libs.DaggerHilt.compiler
 
     implementation Libs.Coil.compose
+
+    implementation Libs.SqlDelight.androidDriver
 }

@@ -18,6 +18,10 @@ private val CabinFontFamily = FontFamily(
     Font(R.font.cabin),
 )
 
+private val RobotoMonoFontFamily = FontFamily(
+    Font(R.font.roboto_mono),
+)
+
 val AppIdTypography = Typography(
     defaultFontFamily = RubikFontFamily,
     h3 = TextStyle(
@@ -31,10 +35,11 @@ val AppIdTypography = Typography(
         letterSpacing = 0.15.sp
     ),
     button = TextStyle(
+        fontFamily = RobotoMonoFontFamily,
         fontWeight = FontWeight.Bold,
+        fontFeatureSettings = "smcp",
         fontSize = 14.sp,
         letterSpacing = 1.25.sp,
-        fontFamily = CabinFontFamily
     ),
     caption = TextStyle(
         fontWeight = FontWeight.Normal,
@@ -58,3 +63,10 @@ val Typography.h6Bold: TextStyle
 
 val Typography.h4Bold: TextStyle
     get() = h4.copy(fontWeight = FontWeight.Bold)
+
+val Typography.appName: TextStyle
+    get() = subtitle1.copy(
+        fontFamily = RobotoMonoFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontFeatureSettings = "smcp"
+    )
