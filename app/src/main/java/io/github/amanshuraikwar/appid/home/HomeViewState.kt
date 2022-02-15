@@ -1,14 +1,11 @@
 package io.github.amanshuraikwar.appid.home
 
-import io.github.amanshuraikwar.appid.model.App
+internal sealed class HomeViewState {
+    object AppGroups : HomeViewState()
 
-sealed class HomeViewState {
-    object Loading : HomeViewState()
+    object AddAppGroup : HomeViewState()
 
-    object NoApps : HomeViewState()
-
-    data class Success(
+    data class AppGroup(
         val packageName: String,
-        val apps: List<App>
     ) : HomeViewState()
 }

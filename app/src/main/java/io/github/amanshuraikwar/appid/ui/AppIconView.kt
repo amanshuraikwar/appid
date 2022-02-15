@@ -1,9 +1,11 @@
-package io.github.amanshuraikwar.appid.home
+package io.github.amanshuraikwar.appid.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import io.github.amanshuraikwar.appid.AppIconImageData
+import io.github.amanshuraikwar.appid.coilOverloadedImageLoader
 
 @Composable
 fun AppIconView(

@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.home
+package io.github.amanshuraikwar.appid.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
