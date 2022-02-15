@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.home
+package io.github.amanshuraikwar.appid.addappgroup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,9 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
+import io.github.amanshuraikwar.appid.ui.AppIconView
 
 @Composable
-fun AppView(
+internal fun AppView(
     modifier: Modifier = Modifier,
     app: App
 ) {

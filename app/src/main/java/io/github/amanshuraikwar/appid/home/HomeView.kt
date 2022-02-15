@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,9 +22,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,18 +31,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import io.github.amanshuraikwar.appid.R
+import io.github.amanshuraikwar.appid.addappgroup.AddAppGroupView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
-import io.github.amanshuraikwar.appid.ui.SearchBar
 import io.github.amanshuraikwar.appid.ui.theme.appName
 
 @Composable
-fun HomeView(
-    viewModel: HomeViewModel = viewModel()
-) {
-    val state: HomeViewState by viewModel.state.collectAsState()
-    val search: String by viewModel.searchFlow.collectAsState("")
-
-
+fun HomeView() {
+    val vm: HomeViewModel = viewModel()
+    val state by vm.state.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -56,32 +48,17 @@ fun HomeView(
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Surface(
-                    color = MaterialTheme.colors.surface,
-                    elevation = 8.dp
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .statusBarsPadding()
-                            .padding(16.dp),
-                        text = stringResource(id = R.string.app_name),
-                        style = MaterialTheme.typography.appName,
-                    )
-                }
+                ActionBarView()
 
                 AppGroupsView(
                     modifier = Modifier,
                 )
             }
 
-            var visible by remember {
-                mutableStateOf(false)
-            }
-
-            BackHandler(enabled = visible) {
-                visible = false
-            }
+            BackHandler(
+                enabled = state == HomeViewState.AddAppGroup,
+                onBack = vm::onBackClick
+            )
 
             FloatingActionButton(
                 shape = MaterialTheme.shapes.small,
@@ -90,7 +67,7 @@ fun HomeView(
                     .navigationBarsPadding()
                     .padding(bottom = 16.dp),
                 backgroundColor = MaterialTheme.colors.primary,
-                onClick = { visible = true }
+                onClick = vm::onCreateAppGroupClick
             ) {
                 Row {
                     Icon(
@@ -118,7 +95,7 @@ fun HomeView(
             }
 
             AnimatedVisibility(
-                visible = visible,
+                visible = state == HomeViewState.AddAppGroup,
                 enter = slideInVertically {
                     it
                 },
@@ -126,16 +103,11 @@ fun HomeView(
                     it
                 }
             ) {
-                AppsView(
+                AddAppGroupView(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background),
-                    onCreateGroupClick = { packageName ->
-                        visible  = false
-                    },
-                    onBackClick = {
-                        visible = false
-                    }
+                    onBackClick = vm::onBackClick
                 )
             }
         }

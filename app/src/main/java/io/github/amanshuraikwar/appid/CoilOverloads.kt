@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.home
+package io.github.amanshuraikwar.appid
 
 import android.content.Context
 import coil.Coil

@@ -40,8 +40,8 @@ import io.github.amanshuraikwar.appid.ui.theme.disabled
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    onSearch: (query: String) -> Unit = {},
-    onBackClick: () -> Unit = {},
+    onSearch: (query: String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     Surface(
         modifier,
