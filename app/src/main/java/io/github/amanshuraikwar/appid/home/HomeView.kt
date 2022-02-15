@@ -6,7 +6,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,14 +22,19 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsPadding
-import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
+import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
 
 @Composable
 fun HomeView() {
@@ -41,16 +45,24 @@ fun HomeView() {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        Box {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                ActionBarView()
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            var actionBarHeight by remember { mutableStateOf(0) }
 
-                AppGroupsView(
-                    modifier = Modifier,
-                )
-            }
+            AppGroupsView(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = with(LocalDensity.current) { actionBarHeight.toDp() },
+                    ),
+            )
+
+            ActionBarView(
+                modifier = Modifier.onSizeChanged {
+                    actionBarHeight = it.height
+                }
+            )
 
             BackHandler(
                 enabled = state == HomeViewState.CreateAppGroup,
