@@ -1,12 +1,9 @@
 package io.github.amanshuraikwar.appid.createappgroup
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import io.github.amanshuraikwar.appid.ui.ActionButton
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
 
@@ -57,7 +55,7 @@ internal fun BottomBarView(
             style = MaterialTheme.typography.body2
         )
 
-        Surface(
+        ActionButton(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .onSizeChanged {
@@ -67,42 +65,30 @@ internal fun BottomBarView(
                     horizontal = 16.dp,
                     vertical = 12.dp
                 ),
-            color = if (state is CreateAppGroupState.Success
+            text = "Create Group",
+            bgColor = if (state is CreateAppGroupState.Success
                 && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
             ) {
                 MaterialTheme.colors.primary
             } else {
                 MaterialTheme.colors.onSurface.disabled
             },
-            shape = RoundedCornerShape(50)
-        ) {
-            Text(
-                modifier = Modifier
-                    .let {
-                        if (state is CreateAppGroupState.Success
-                            && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
-                        ) {
-                            it.clickable {
-                                onCreateGroupClick(state.packageName)
-                            }
-                        } else {
-                            it
-                        }
-                    }
-                    .padding(
-                        horizontal = 16.dp,
-                        vertical = 12.dp
-                    ),
-                text = "Create Group",
-                style = MaterialTheme.typography.button,
-                color = if (state is CreateAppGroupState.Success
+            textColor = if (state is CreateAppGroupState.Success
+                && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
+            ) {
+                MaterialTheme.colors.onPrimary
+            } else {
+                MaterialTheme.colors.onSurface.medium
+            },
+            enabled = state is CreateAppGroupState.Success
+                    && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes,
+            onClick = {
+                if (state is CreateAppGroupState.Success
                     && state.canCreateAppGroup is CreateAppGroupState.CanCreateAppGroup.Yes
                 ) {
-                    MaterialTheme.colors.onPrimary
-                } else {
-                    MaterialTheme.colors.onSurface.medium
-                },
-            )
-        }
+                    onCreateGroupClick(state.packageName)
+                }
+            }
+        )
     }
 }

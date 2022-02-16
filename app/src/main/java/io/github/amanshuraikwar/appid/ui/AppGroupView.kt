@@ -1,5 +1,6 @@
-package io.github.amanshuraikwar.appid.appgroups
+package io.github.amanshuraikwar.appid.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,13 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import io.github.amanshuraikwar.appid.ui.AppIconView
 import io.github.amanshuraikwar.appid.model.AppGroup
 
 @Composable
-internal fun AppGroupView(
+fun AppGroupView(
     modifier: Modifier = Modifier,
-    appGroup: AppGroup
+    appGroup: AppGroup,
+    clickable: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
@@ -30,6 +32,7 @@ internal fun AppGroupView(
     ) {
         BoxWithConstraints(
             modifier = Modifier
+                .clickable(enabled = clickable, onClick = onClick)
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 4.dp)
                 .height(120.dp)

@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.navigationBarsPadding
+import io.github.amanshuraikwar.appid.appgroupdetail.AppGroupDetailView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
 
@@ -56,6 +57,7 @@ fun HomeView() {
                     .padding(
                         top = with(LocalDensity.current) { actionBarHeight.toDp() },
                     ),
+                onAppGroupClick = vm::onAppGroupClick
             )
 
             ActionBarView(
@@ -117,6 +119,25 @@ fun HomeView() {
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background),
                     onBackClick = vm::onBackClick
+                )
+            }
+
+            AnimatedVisibility(
+                visible = state is HomeViewState.AppGroupDetail,
+                enter = slideInVertically {
+                    it
+                },
+                exit = slideOutVertically {
+                    it
+                }
+            ) {
+                AppGroupDetailView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.background),
+                    id = (state as HomeViewState.AppGroupDetail).id
+                    //onBackClick = vm::onBackClick,
+
                 )
             }
         }

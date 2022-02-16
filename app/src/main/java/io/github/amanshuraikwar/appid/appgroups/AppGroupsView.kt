@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.HeaderView
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
@@ -30,13 +31,15 @@ import io.github.amanshuraikwar.appid.ui.theme.medium
 @Composable
 fun AppGroupsView(
     modifier: Modifier = Modifier,
+    onAppGroupClick: (String) -> Unit
 ) {
     val vm: AppGroupsViewModel = viewModel()
     val state by vm.state.collectAsState()
 
     AppGroupsView(
         modifier = modifier,
-        state = state
+        state = state,
+        onAppGroupClick = onAppGroupClick
     )
 }
 
@@ -45,7 +48,8 @@ fun AppGroupsView(
 @Composable
 internal fun AppGroupsView(
     modifier: Modifier = Modifier,
-    state: AppGroupsState
+    state: AppGroupsState,
+    onAppGroupClick: (String) -> Unit
 ) {
     when (state) {
         AppGroupsState.Fetching -> {
@@ -85,7 +89,11 @@ internal fun AppGroupsView(
                     },
                 ) { item ->
                     AppGroupView(
-                        appGroup = item
+                        appGroup = item,
+                        clickable = true,
+                        onClick = {
+                            onAppGroupClick(item.id)
+                        }
                     )
                 }
             }

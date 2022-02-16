@@ -12,3 +12,6 @@ DELETE FROM AppGroupEntity;
 
 findAll:
 SELECT * FROM AppGroupEntity;
+
+findById:
+SELECT * FROM AppGroupEntity WHERE id = :id;
