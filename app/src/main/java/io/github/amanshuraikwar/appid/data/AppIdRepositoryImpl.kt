@@ -1,7 +1,9 @@
 package io.github.amanshuraikwar.appid.data
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
@@ -17,7 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class AppIdRepositoryImpl(
-    applicationContext: Context,
+    private val applicationContext: Context,
     private val dispatcherProvider: CoroutinesDispatcherProvider,
     private val appIdDb: AppIdDb
 ) : AppIdRepository {
@@ -71,11 +73,46 @@ class AppIdRepositoryImpl(
             }
     }
 
-    override suspend fun addAppGroup(packageName: String) {
+    override suspend fun createAppGroup(packageName: String) {
         withContext(dispatcherProvider.io) {
             appIdDb
                 .appGroupEntityQueries
                 .insert(packageName = packageName)
+        }
+    }
+
+    override suspend fun getAppGroup(id: String): AppGroup? {
+        return withContext(dispatcherProvider.io) {
+            appIdDb
+                .appGroupEntityQueries
+                .findById(id = id.toLong())
+                .executeAsList()
+                .firstOrNull()
+                ?.let { appGroupEntity ->
+                    AppGroup(
+                        id = appGroupEntity.id.toString(),
+                        name = appGroupEntity.packageName,
+                        apps = allInstalledApps.filter { app ->
+                            app.packageName.startsWith(
+                                appGroupEntity.packageName.toLowerCase(Locale.current)
+                            )
+                        }
+                    )
+                }
+        }
+    }
+
+    override suspend fun deleteApp(packageName: String) {
+        withContext(dispatcherProvider.io) {
+            packageManager.packageInstaller.uninstall(
+                packageName,
+                PendingIntent.getBroadcast(
+                    applicationContext,
+                    1001,
+                    Intent("android.intent.action.MAIN"),
+                    PendingIntent.FLAG_IMMUTABLE
+                ).intentSender
+            )
         }
     }
 }

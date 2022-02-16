@@ -7,5 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface AppIdRepository {
     suspend fun getAllInstalledApps(packageName: String): List<App>
     suspend fun getSavedAppGroups(): Flow<List<AppGroup>>
-    suspend fun addAppGroup(packageName: String)
+    suspend fun createAppGroup(packageName: String)
+    suspend fun getAppGroup(id: String): AppGroup?
+    suspend fun deleteApp(packageName: String)
 }

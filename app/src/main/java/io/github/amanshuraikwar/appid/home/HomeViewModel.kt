@@ -21,4 +21,10 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
     fun onCreateAppGroupClick() {
         _state.value = HomeViewState.CreateAppGroup
     }
+
+    fun onAppGroupClick(id: String) {
+        _state.value = HomeViewState.AppGroupDetail(
+            id = id
+        )
+    }
 }

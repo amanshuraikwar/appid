@@ -5,7 +5,7 @@ internal sealed class HomeViewState {
 
     object CreateAppGroup : HomeViewState()
 
-    data class AppGroup(
-        val packageName: String,
+    data class AppGroupDetail(
+        val id: String,
     ) : HomeViewState()
 }

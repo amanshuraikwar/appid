@@ -83,7 +83,7 @@ internal class CreateAppGroupViewModel @Inject constructor(
 
     fun onCreateGroupClick(packageName: String) {
         viewModelScope.launch {
-            appIdRepository.addAppGroup(packageName)
+            appIdRepository.createAppGroup(packageName)
         }
     }
 }
