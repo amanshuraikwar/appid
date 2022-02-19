@@ -17,7 +17,7 @@ fun HeaderView(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colors.surface
+        color = MaterialTheme.colors.surface,
     ) {
         Text(
             text = title.uppercase(Locale.ROOT),

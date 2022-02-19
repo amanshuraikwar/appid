@@ -10,4 +10,6 @@ interface AppIdRepository {
     suspend fun createAppGroup(packageName: String)
     suspend fun getAppGroup(id: String): AppGroup?
     suspend fun deleteApp(packageName: String)
+    suspend fun appWasUninstalled(packageName: String)
+    suspend fun updateInstalledAppCache()
 }

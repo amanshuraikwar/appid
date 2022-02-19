@@ -1,15 +1,22 @@
 package io.github.amanshuraikwar.appid.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.amanshuraikwar.appid.CoroutinesDispatcherProvider
+import io.github.amanshuraikwar.appid.data.AppIdRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "HomeViewModel"
 
 @HiltViewModel
-internal class HomeViewModel @Inject constructor() : ViewModel() {
+internal class HomeViewModel @Inject constructor(
+    private val dispatcherProvider: CoroutinesDispatcherProvider,
+    private val appIdRepository: AppIdRepository
+) : ViewModel() {
     private val _state: MutableStateFlow<HomeViewState> =
         MutableStateFlow(HomeViewState.AppGroups)
     val state: StateFlow<HomeViewState> = _state
@@ -26,5 +33,11 @@ internal class HomeViewModel @Inject constructor() : ViewModel() {
         _state.value = HomeViewState.AppGroupDetail(
             id = id
         )
+    }
+
+    fun onReturnedFromAppDetails(appGroupId: String) {
+        viewModelScope.launch(dispatcherProvider.computation) {
+            appIdRepository.updateInstalledAppCache()
+        }
     }
 }

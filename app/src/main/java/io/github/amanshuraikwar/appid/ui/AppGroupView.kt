@@ -1,78 +1,143 @@
 package io.github.amanshuraikwar.appid.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.AppGroup
+import io.github.amanshuraikwar.appid.ui.theme.outline
+import kotlin.math.roundToInt
 
 @Composable
 fun AppGroupView(
     modifier: Modifier = Modifier,
     appGroup: AppGroup,
-    clickable: Boolean = false,
-    onClick: () -> Unit = {}
+    lines: Int? = null,
 ) {
-    Surface(
-        shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 8.dp),
-        elevation = 2.dp
-    ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .clickable(enabled = clickable, onClick = onClick)
-                .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 4.dp)
-                .height(120.dp)
-        ) {
-            val width = with(LocalDensity.current) {
-                64.dp.toPx()
-            }
-            val height = with(LocalDensity.current) {
-                56.dp.toPx()
-            }
-            val perRow = (constraints.maxWidth / width).toInt()
+    SubcomposeLayout(modifier = modifier) { constraints ->
+        val iconWidthPx = 56.dp.toPx()
+        val iconHeightPx = 56.dp.toPx()
+        val minimumHorizontalPadding = 8.dp.toPx()
+        val minimumVerticalPadding = 8.dp.toPx()
 
-            val totalHorizontalGap = with(LocalDensity.current) {
-                constraints.maxWidth - perRow * 64.dp.toPx()
-            }
-            val horizontalGap = (totalHorizontalGap / (perRow - 1)).toInt()
+        val perRow = (constraints.maxWidth / (iconWidthPx + minimumHorizontalPadding)).toInt()
 
-            val verticalGap = with(LocalDensity.current) {
-                8.dp.toPx()
-            }
+        val totalExtraHorizontalGapPx =
+            constraints.maxWidth -
+                    ((perRow * iconWidthPx) + ((perRow - 1) * minimumHorizontalPadding))
+        val extraHorizontalGapPx = (totalExtraHorizontalGapPx / (perRow - 1)).toInt()
 
-            appGroup
-                .apps
-                .take(perRow * 2).forEachIndexed { index, app ->
-                    val col = index % perRow
-                    val row = index / perRow
+        val horizontalGapPx = (minimumHorizontalPadding + extraHorizontalGapPx).roundToInt()
+        // keep extra horizontal gap same as extra vertical gap
+        val verticalGapPx = minimumVerticalPadding + extraHorizontalGapPx
 
-                    AppIconView(
-                        modifier = Modifier
-                            .offset {
-                                IntOffset(
-                                    x = (col * width).toInt() + (horizontalGap * col),
-                                    y = (row * height).toInt() + (verticalGap * row).toInt()
+        val allApps = appGroup.apps
+        val totalLines =
+            lines
+                ?: ((appGroup.apps.size / perRow) + if (appGroup.apps.size % perRow == 0) 0 else 1)
+
+        val heightPx =
+            ((totalLines * iconHeightPx) + ((totalLines - 1) * verticalGapPx)).roundToInt()
+
+        val placeables = mutableListOf<Placeable>()
+        for (index in (0 until (perRow * totalLines))) {
+            val app = allApps.getOrNull(index)
+            val placeable = subcompose(index) {
+                if (app != null) {
+                    if (index == (perRow * totalLines - 1)) {
+                        if (allApps.size - 1 == index) {
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                shape = MaterialTheme.shapes.small,
+                                color = MaterialTheme.colors.surface,
+                                elevation = 2.dp
+                            ) {
+                                AppIconView(
+                                    modifier = Modifier.fillMaxSize(),
+                                    packageName = app.packageName,
                                 )
                             }
-                            .padding(horizontal = 4.dp)
-                            .size(56.dp),
-                        packageName = app.packageName
-                    )
+                        } else {
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                shape = MaterialTheme.shapes.small,
+                                color = MaterialTheme.colors.surface,
+                                border = BorderStroke(
+                                    2.dp,
+                                    MaterialTheme.colors.outline
+                                )
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "+${allApps.size - perRow * totalLines + 1}",
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            shape = MaterialTheme.shapes.small,
+                            color = MaterialTheme.colors.surface,
+                            elevation = 2.dp
+                        ) {
+                            AppIconView(
+                                modifier = Modifier.fillMaxSize(),
+                                packageName = app.packageName,
+                            )
+                        }
+                    }
+                } else {
+                    Surface(
+                        Modifier.fillMaxSize(),
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colors.surface,
+                        border = BorderStroke(
+                            2.dp,
+                            MaterialTheme.colors.outline
+                        )
+                    ) {
+                        Box {}
+                    }
                 }
+            }
+                .first()
+                .measure(
+                    constraints = constraints.copy(
+                        maxWidth = iconWidthPx.roundToInt(),
+                        maxHeight = iconHeightPx.roundToInt(),
+                        minWidth = iconWidthPx.roundToInt(),
+                        minHeight = iconHeightPx.roundToInt()
+                    )
+                )
+
+            placeables.add(
+                placeable
+            )
+        }
+
+        layout(constraints.maxWidth, height = heightPx) {
+            placeables.forEachIndexed { index, placeable ->
+                val col = index % perRow
+                val row = index / perRow
+                val offset = IntOffset(
+                    x = (col * iconWidthPx).toInt() + (horizontalGapPx * col),
+                    y = (row * iconHeightPx).toInt() + (verticalGapPx * row).toInt()
+                )
+                placeable.place(offset)
+            }
         }
     }
 }

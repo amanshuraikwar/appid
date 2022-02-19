@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
@@ -67,16 +65,18 @@ fun HomeView() {
             )
 
             BackHandler(
-                enabled = state == HomeViewState.CreateAppGroup,
+                enabled =
+                state == HomeViewState.CreateAppGroup
+                        || state is HomeViewState.AppGroupDetail,
                 onBack = vm::onBackClick
             )
 
             FloatingActionButton(
-                shape = RoundedCornerShape(50),
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.BottomEnd)
                     .navigationBarsPadding()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 16.dp, end = 16.dp),
                 backgroundColor = MaterialTheme.colors.primary,
                 onClick = vm::onCreateAppGroupClick
             ) {
@@ -88,19 +88,8 @@ fun HomeView() {
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .clip(shape = MaterialTheme.shapes.small)
-                            .padding(vertical = 16.dp)
-                            .padding(start = 16.dp)
+                            .padding(16.dp)
                             .size(24.dp)
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(vertical = 16.dp)
-                            .padding(start = 12.dp, end = 16.dp),
-                        text = "Create App Group",
-                        style = MaterialTheme.typography.button,
-                        color = MaterialTheme.colors.onPrimary
                     )
                 }
             }
@@ -131,14 +120,20 @@ fun HomeView() {
                     it
                 }
             ) {
-                AppGroupDetailView(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.background),
-                    id = (state as HomeViewState.AppGroupDetail).id
-                    //onBackClick = vm::onBackClick,
-
-                )
+                if (state is HomeViewState.AppGroupDetail) {
+                    AppGroupDetailView(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colors.background),
+                        id = (state as HomeViewState.AppGroupDetail).id,
+                        onBackClick = {
+                            vm.onReturnedFromAppDetails(
+                                appGroupId = (state as HomeViewState.AppGroupDetail).id
+                            )
+                            vm.onBackClick()
+                        },
+                    )
+                }
             }
         }
     }
