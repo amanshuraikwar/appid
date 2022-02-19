@@ -13,9 +13,14 @@ import io.github.amanshuraikwar.appid.db.asFlow
 import io.github.amanshuraikwar.appid.db.mapToList
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 class AppIdRepositoryImpl(
@@ -25,19 +30,32 @@ class AppIdRepositoryImpl(
 ) : AppIdRepository {
     private val packageManager = applicationContext.packageManager
 
-    private val allInstalledApps: List<App> by lazy {
-        packageManager
-            .getInstalledApplications(PackageManager.GET_META_DATA)
-            .map { applicationInfo ->
-                App(
-                    name = packageManager.getApplicationLabel(applicationInfo).toString(),
-                    packageName = applicationInfo.packageName,
-                    versionName = packageManager.getPackageInfo(
-                        applicationInfo.packageName,
-                        PackageManager.GET_PERMISSIONS
-                    ).versionName ?: "-"
-                )
-            }
+    private var isCacheDirty = false
+    private val cacheLock = Mutex()
+
+    private val installAppsFlow = MutableSharedFlow<List<App>>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    private suspend fun fetchInstallApps() {
+        withContext(dispatcherProvider.computation) {
+            val installedApps = packageManager
+                .getInstalledApplications(PackageManager.GET_META_DATA)
+                .map { applicationInfo ->
+                    App(
+                        name = packageManager.getApplicationLabel(applicationInfo).toString(),
+                        packageName = applicationInfo.packageName,
+                        versionName = packageManager.getPackageInfo(
+                            applicationInfo.packageName,
+                            PackageManager.GET_PERMISSIONS
+                        ).versionName ?: "-"
+                    )
+                }
+
+            installAppsFlow.tryEmit(installedApps)
+        }
     }
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -45,31 +63,42 @@ class AppIdRepositoryImpl(
         packageName: String
     ): List<App> {
         return withContext(dispatcherProvider.computation) {
-            allInstalledApps.filter { app ->
-                app.packageName.startsWith(packageName.toLowerCase(Locale.current))
-            }
+            updateInstalledAppCache()
+            installAppsFlow.first()
+                .filter { app ->
+                    app.packageName.startsWith(packageName.toLowerCase(Locale.current))
+                }
         }
     }
 
     override suspend fun getSavedAppGroups(): Flow<List<AppGroup>> {
+        fetchInstallApps()
+
         return appIdDb
             .appGroupEntityQueries
             .findAll()
             .asFlow()
             .mapToList()
             .conflate()
-            .map {
-                it.map { appGroupEntity ->
-                    AppGroup(
-                        id = appGroupEntity.id.toString(),
-                        name = appGroupEntity.packageName,
-                        apps = allInstalledApps.filter { app ->
+            .combine(installAppsFlow) { appGroupEntityList, appList ->
+                appGroupEntityList
+                    .mapNotNull { appGroupEntity ->
+                        val filteredAppList = appList.filter { app ->
                             app.packageName.startsWith(
                                 appGroupEntity.packageName.toLowerCase(Locale.current)
                             )
                         }
-                    )
-                }
+
+                        if (filteredAppList.isEmpty()) {
+                            null
+                        } else {
+                            AppGroup(
+                                id = appGroupEntity.id.toString(),
+                                name = appGroupEntity.packageName,
+                                apps = filteredAppList
+                            )
+                        }
+                    }
             }
     }
 
@@ -83,6 +112,8 @@ class AppIdRepositoryImpl(
 
     override suspend fun getAppGroup(id: String): AppGroup? {
         return withContext(dispatcherProvider.io) {
+            val allInstalledApps = installAppsFlow.first()
+
             appIdDb
                 .appGroupEntityQueries
                 .findById(id = id.toLong())
@@ -113,6 +144,21 @@ class AppIdRepositoryImpl(
                     PendingIntent.FLAG_IMMUTABLE
                 ).intentSender
             )
+        }
+    }
+
+    override suspend fun appWasUninstalled(packageName: String) {
+        cacheLock.withLock {
+            isCacheDirty = true
+        }
+    }
+
+    override suspend fun updateInstalledAppCache() {
+        cacheLock.withLock {
+            if (isCacheDirty) {
+                fetchInstallApps()
+                isCacheDirty = false
+            }
         }
     }
 }

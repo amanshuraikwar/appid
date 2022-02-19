@@ -11,49 +11,68 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 import java.util.*
 
-object AppUninstaller {
-    private val resultLauncherMap =
-        WeakHashMap<ComponentActivity, ActivityResultLauncher<String>>()
-    private val continuationMap =
-        WeakHashMap<ComponentActivity, CancellableContinuation<Boolean>>()
+class AppUninstaller(
+    context: Context,
+) {
+    private val activityWr = WeakReference(context as ComponentActivity)
 
-    fun register(activity: ComponentActivity) {
-        val componentActivityWr = WeakReference(activity)
-        val resultLauncher = activity.registerForActivityResult(
-            object : ActivityResultContract<String, Data>() {
-                override fun createIntent(context: Context, input: String): Intent {
-                    return Intent(
-                        Intent.ACTION_DELETE,
-                        Uri.fromParts(
-                            "package",
-                            input,
-                            null
-                        )
-                    ).putExtra(Intent.EXTRA_RETURN_RESULT, true)
-                }
-
-                override fun parseResult(resultCode: Int, intent: Intent?): Data {
-                    return Data(
-                        componentActivityWr = componentActivityWr,
-                        result = resultCode == ComponentActivity.RESULT_OK
-                    )
+    suspend fun uninstall(packageName: String): UninstallResult {
+        return activityWr
+            .get()
+            ?.let { activity ->
+                if (uninstall(activity = activity, packageName = packageName)) {
+                    UninstallResult.Success
+                } else {
+                    UninstallResult.Failed
                 }
             }
-        ) { result: Data ->
-            result.componentActivityWr.get()?.let {
-                continuationMap[it]?.resumeWith(Result.success(result.result))
-                continuationMap[it] = null
-            }
-        }
-
-        resultLauncherMap[activity] = resultLauncher
+            ?: UninstallResult.ActivityGced
     }
 
-    suspend fun uninstall(activity: ComponentActivity, packageName: String): Boolean {
-        if (continuationMap[activity] != null) return false
-        return suspendCancellableCoroutine {
-            continuationMap[activity] = it
-            resultLauncherMap[activity]?.launch(packageName)
+    companion object {
+        private val resultLauncherMap =
+            WeakHashMap<ComponentActivity, ActivityResultLauncher<String>>()
+        private val continuationMap =
+            WeakHashMap<ComponentActivity, CancellableContinuation<Boolean>>()
+
+        fun register(activity: ComponentActivity) {
+            val componentActivityWr = WeakReference(activity)
+            val resultLauncher = activity.registerForActivityResult(
+                object : ActivityResultContract<String, Data>() {
+                    override fun createIntent(context: Context, input: String): Intent {
+                        return Intent(
+                            Intent.ACTION_DELETE,
+                            Uri.fromParts(
+                                "package",
+                                input,
+                                null
+                            )
+                        ).putExtra(Intent.EXTRA_RETURN_RESULT, true)
+                    }
+
+                    override fun parseResult(resultCode: Int, intent: Intent?): Data {
+                        return Data(
+                            componentActivityWr = componentActivityWr,
+                            result = resultCode == ComponentActivity.RESULT_OK
+                        )
+                    }
+                }
+            ) { result: Data ->
+                result.componentActivityWr.get()?.let {
+                    continuationMap[it]?.resumeWith(Result.success(result.result))
+                    continuationMap[it] = null
+                }
+            }
+
+            resultLauncherMap[activity] = resultLauncher
+        }
+
+        private suspend fun uninstall(activity: ComponentActivity, packageName: String): Boolean {
+            if (continuationMap[activity] != null) return false
+            return suspendCancellableCoroutine {
+                continuationMap[activity] = it
+                resultLauncherMap[activity]?.launch(packageName)
+            }
         }
     }
 
@@ -61,4 +80,10 @@ object AppUninstaller {
         val componentActivityWr: WeakReference<ComponentActivity>,
         val result: Boolean
     )
+
+    sealed class UninstallResult {
+        object ActivityGced : UninstallResult()
+        object Success : UninstallResult()
+        object Failed : UninstallResult()
+    }
 }

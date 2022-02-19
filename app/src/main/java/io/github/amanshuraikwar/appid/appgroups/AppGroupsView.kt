@@ -1,22 +1,24 @@
 package io.github.amanshuraikwar.appid.appgroups
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,8 +27,10 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.HeaderView
+import io.github.amanshuraikwar.appid.ui.LoadingView
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
+import io.github.amanshuraikwar.appid.ui.theme.packageName
 
 @Composable
 fun AppGroupsView(
@@ -53,20 +57,10 @@ internal fun AppGroupsView(
 ) {
     when (state) {
         AppGroupsState.Fetching -> {
-            Column(
-                modifier = modifier.fillMaxWidth()
-            ) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "Loading groups...",
-                    style = MaterialTheme.typography.h4,
-                    color = MaterialTheme.colors.onBackground
-                )
-            }
+            LoadingView(
+                modifier = modifier.fillMaxWidth(),
+                text = "Loading app groups..."
+            )
         }
         is AppGroupsState.Success -> {
             LazyColumn(
@@ -78,7 +72,7 @@ internal fun AppGroupsView(
                     additionalBottom = 128.dp
                 ),
             ) {
-                stickyHeader {
+                item {
                     HeaderView(title = "App Groups")
                 }
 
@@ -88,13 +82,34 @@ internal fun AppGroupsView(
                         app.id
                     },
                 ) { item ->
-                    AppGroupView(
-                        appGroup = item,
-                        clickable = true,
-                        onClick = {
-                            onAppGroupClick(item.id)
+                    Surface(
+                        color = MaterialTheme.colors.surface
+                    ) {
+                        Column(
+                            Modifier
+                                .clickable {
+                                    onAppGroupClick(item.id)
+                                }
+                        ) {
+                            Column(
+                                Modifier
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    style = MaterialTheme.typography.packageName,
+                                    modifier = Modifier.padding(bottom = 12.dp)
+                                )
+
+                                AppGroupView(
+                                    appGroup = item,
+                                    lines = 1,
+                                )
+                            }
+
+                            Divider()
                         }
-                    )
+                    }
                 }
             }
         }
@@ -107,14 +122,14 @@ internal fun AppGroupsView(
                     contentDescription = "Search",
                     tint = MaterialTheme.colors.primary.disabled,
                     modifier = Modifier
-                        .align(CenterHorizontally)
+                        .align(Alignment.CenterHorizontally)
                         .padding(32.dp)
                         .size(128.dp)
                 )
 
                 Text(
                     modifier = Modifier
-                        .align(CenterHorizontally)
+                        .align(Alignment.CenterHorizontally)
                         .padding(16.dp),
                     text = "You have not created aby app groups yet.",
                     style = MaterialTheme.typography.subtitle1,

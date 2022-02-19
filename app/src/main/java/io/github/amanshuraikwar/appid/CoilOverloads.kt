@@ -1,11 +1,23 @@
 package io.github.amanshuraikwar.appid
 
 import android.content.Context
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.graphics.toArgb
 import coil.Coil
 import coil.ImageLoader
 import kotlinx.coroutines.Dispatchers
 
-data class AppIconImageData(val packageName: String)
+enum class AppIconLayer {
+    FOREGROUND, BACKGROUND
+}
+
+data class AppIconImageData(
+    val packageName: String,
+    val layer: AppIconLayer
+)
 
 inline val Context.coilOverloadedImageLoader: ImageLoader
     get() = CoilOverloads.imageLoader(this)
@@ -29,16 +41,35 @@ object CoilOverloads {
                     // get the icon drawable from package name here
                     // instead of in a composable scope
                     if (data is AppIconImageData) {
+                        val drawable = chain
+                            .request
+                            .context
+                            .packageManager
+                            .getApplicationIcon(data.packageName)
+
+                        val newData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (drawable is AdaptiveIconDrawable) {
+                                when (data.layer) {
+                                    AppIconLayer.FOREGROUND -> drawable.foreground
+                                    AppIconLayer.BACKGROUND -> drawable.background
+                                }
+                            } else {
+                                when (data.layer) {
+                                    AppIconLayer.FOREGROUND -> drawable
+                                    AppIconLayer.BACKGROUND -> ColorDrawable()
+                                }
+                            }
+                        } else {
+                            when (data.layer) {
+                                AppIconLayer.FOREGROUND -> drawable
+                                AppIconLayer.BACKGROUND -> ColorDrawable()
+                            }
+                        }
+
                         chain.proceed(
                             chain.request
                                 .newBuilder()
-                                .data(
-                                    chain
-                                        .request
-                                        .context
-                                        .packageManager
-                                        .getApplicationIcon(data.packageName)
-                                )
+                                .data(newData)
                                 .build()
                         )
                     } else {
