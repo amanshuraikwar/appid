@@ -1,0 +1,133 @@
+package io.github.amanshuraikwar.appid.selectappspackage
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.amanshuraikwar.appid.model.App
+import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
+import io.github.amanshuraikwar.appid.ui.AppIdScaffold
+import io.github.amanshuraikwar.appid.ui.SearchBar
+import io.github.amanshuraikwar.appid.ui.UiError
+import kotlinx.coroutines.delay
+
+@Composable
+fun SelectAppsPackageView(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+    onSelected: (appList: List<App>) -> Unit,
+) {
+    val vm: SelectAppsPackageViewModel = viewModel()
+    val state by vm.state.collectAsState()
+    val error by produceState<UiError?>(null, vm.error) {
+        vm.error.collect {
+            value = it
+            if (it != null) {
+                delay(3000)
+            }
+        }
+    }
+
+    val selectApps by vm.selectAppsFlow.collectAsState()
+    DisposableEffect(selectApps) {
+        selectApps?.apps?.let(onSelected)
+        onDispose(vm::onDispose)
+    }
+
+    SelectAppsPackageView(
+        modifier = modifier,
+        state = state,
+        error = error,
+        onBackClick = onBackClick,
+        onSearch = vm::onSearch,
+        onSelectClick = vm::onSelectClick
+    )
+}
+
+@Composable
+internal fun SelectAppsPackageView(
+    modifier: Modifier = Modifier,
+    state: SelectAppsPackageState,
+    error: UiError?,
+    onBackClick: () -> Unit,
+    onSearch: (query: String) -> Unit,
+    onSelectClick: () -> Unit,
+) {
+    AppIdScaffold(
+        modifier = modifier,
+        actionBar = {
+            SearchBar(
+                onSearch = onSearch,
+                onBackClick = onBackClick
+            )
+        },
+        bottomBar = {
+            Surface(
+                color = MaterialTheme.colors.surface
+            ) {
+                BottomBarView(
+                    modifier = Modifier
+                        .padding(rememberImeAndNavBarInsetsPaddingValues()),
+                    onSelectClick = onSelectClick
+                )
+            }
+        }
+    ) {
+        AppsView(
+            Modifier
+                .clickable { }
+                .fillMaxSize(),
+            state = state,
+        )
+
+        var message by remember {
+            mutableStateOf("")
+        }
+        LaunchedEffect(key1 = error) {
+            if (error != null) {
+                message = error.text
+            }
+        }
+
+        AnimatedVisibility(
+            visible = error != null,
+            enter = slideInVertically {
+                -it
+            },
+            exit = slideOutVertically {
+                -it
+            }
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.colors.error)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                text = message,
+                color = MaterialTheme.colors.onError
+            )
+        }
+    }
+}
+

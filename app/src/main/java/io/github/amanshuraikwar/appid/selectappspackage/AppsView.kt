@@ -1,11 +1,10 @@
-package io.github.amanshuraikwar.appid.createappgroup
+package io.github.amanshuraikwar.appid.selectappspackage
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,10 +16,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AppsOutage
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.ui.AppView
 import io.github.amanshuraikwar.appid.ui.HeaderView
-import io.github.amanshuraikwar.appid.ui.LoadingView
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
 
@@ -29,24 +28,18 @@ import io.github.amanshuraikwar.appid.ui.theme.medium
 @Composable
 internal fun AppsView(
     modifier: Modifier = Modifier,
-    state: CreateAppGroupState,
+    state: SelectAppsPackageState,
 ) {
     Column(modifier) {
         when (state) {
-            CreateAppGroupState.Loading -> {
-                LoadingView(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Loading apps..."
-                )
-            }
-            is CreateAppGroupState.Success -> {
+            is SelectAppsPackageState.Success -> {
                 Box(
                     Modifier.fillMaxSize()
                 ) {
                     LazyColumn {
-                        item {
-                            HeaderView(title = "Installed Apps")
-                        }
+//                        item {
+//                            HeaderView(title = "Installed Apps")
+//                        }
 
                         items(
                             items = state.apps,
@@ -62,7 +55,7 @@ internal fun AppsView(
                     }
                 }
             }
-            is CreateAppGroupState.NoApps -> {
+            is SelectAppsPackageState.NoApps -> {
                 Text(
                     modifier = Modifier.padding(16.dp),
                     text = "No matching apps!",
@@ -77,6 +70,15 @@ internal fun AppsView(
                     modifier = Modifier
                         .padding(16.dp)
                         .size(128.dp)
+                )
+            }
+            SelectAppsPackageState.Idle -> {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "Search apps",
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.colors.onBackground.medium,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }

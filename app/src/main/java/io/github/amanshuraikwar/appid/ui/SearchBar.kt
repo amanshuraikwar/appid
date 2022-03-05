@@ -1,6 +1,5 @@
 package io.github.amanshuraikwar.appid.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +16,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,9 +33,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsPadding
-import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
-import io.github.amanshuraikwar.appid.ui.theme.outline
 
 @Composable
 fun SearchBar(
@@ -92,7 +88,7 @@ fun SearchBar(
                 singleLine = true,
                 cursorBrush = SolidColor(MaterialTheme.colors.primary),
                 keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
+                    capitalization = KeyboardCapitalization.None,
                     autoCorrect = false,
                     imeAction = ImeAction.Search
                 ),

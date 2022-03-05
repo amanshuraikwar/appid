@@ -1,0 +1,27 @@
+CREATE TABLE AppGroupAppListEntity (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    groupId INTEGER NOT NULL,
+    packageName TEXT NOT NULL
+);
+
+insert:
+INSERT INTO AppGroupAppListEntity(groupId, packageName)
+VALUES(:groupId, :packageName);
+
+deleteAll:
+DELETE FROM AppGroupAppListEntity;
+
+deleteById:
+DELETE FROM AppGroupAppListEntity WHERE id = :id;
+
+deleteAllByGroupId:
+DELETE FROM AppGroupAppListEntity WHERE groupId = :groupId;
+
+findAll:
+SELECT * FROM AppGroupAppListEntity;
+
+findById:
+SELECT * FROM AppGroupAppListEntity WHERE id = :id;
+
+findAllByGroupId:
+SELECT * FROM AppGroupAppListEntity WHERE groupId = :groupId;
