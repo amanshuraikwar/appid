@@ -44,15 +44,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.data.AppUninstaller
-import io.github.amanshuraikwar.appid.home.ActionBarView
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
+import io.github.amanshuraikwar.appid.ui.ActionBarView
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppView
 import io.github.amanshuraikwar.appid.ui.HeaderView
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.outline
-
 
 @Composable
 fun AppGroupDetailView(

@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.ui.theme.outline
 import kotlin.math.roundToInt
@@ -20,7 +21,7 @@ import kotlin.math.roundToInt
 @Composable
 fun AppGroupView(
     modifier: Modifier = Modifier,
-    appGroup: AppGroup,
+    appList: List<App>,
     lines: Int? = null,
 ) {
     SubcomposeLayout(modifier = modifier) { constraints ->
@@ -40,10 +41,10 @@ fun AppGroupView(
         // keep extra horizontal gap same as extra vertical gap
         val verticalGapPx = minimumVerticalPadding + extraHorizontalGapPx
 
-        val allApps = appGroup.apps
+        val allApps = appList
         val totalLines =
             lines
-                ?: ((appGroup.apps.size / perRow) + if (appGroup.apps.size % perRow == 0) 0 else 1)
+                ?: ((appList.size / perRow) + if (appList.size % perRow == 0) 0 else 1)
 
         val heightPx =
             ((totalLines * iconHeightPx) + ((totalLines - 1) * verticalGapPx)).roundToInt()
@@ -140,4 +141,17 @@ fun AppGroupView(
             }
         }
     }
+}
+
+@Composable
+fun AppGroupView(
+    modifier: Modifier = Modifier,
+    appGroup: AppGroup,
+    lines: Int? = null,
+) {
+    AppGroupView(
+        modifier = modifier,
+        appList = appGroup.apps,
+        lines = lines
+    )
 }

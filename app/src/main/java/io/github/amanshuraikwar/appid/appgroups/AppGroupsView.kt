@@ -3,12 +3,12 @@ package io.github.amanshuraikwar.appid.appgroups
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -23,18 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.AppGroupView
-import io.github.amanshuraikwar.appid.ui.HeaderView
 import io.github.amanshuraikwar.appid.ui.LoadingView
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
-import io.github.amanshuraikwar.appid.ui.theme.packageName
+import java.util.*
 
 @Composable
 fun AppGroupsView(
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues,
     onAppGroupClick: (String) -> Unit
 ) {
     val vm: AppGroupsViewModel = viewModel()
@@ -43,6 +41,7 @@ fun AppGroupsView(
     AppGroupsView(
         modifier = modifier,
         state = state,
+        paddingValues = paddingValues,
         onAppGroupClick = onAppGroupClick
     )
 }
@@ -53,6 +52,7 @@ fun AppGroupsView(
 internal fun AppGroupsView(
     modifier: Modifier = Modifier,
     state: AppGroupsState,
+    paddingValues: PaddingValues,
     onAppGroupClick: (String) -> Unit
 ) {
     when (state) {
@@ -65,17 +65,8 @@ internal fun AppGroupsView(
         is AppGroupsState.Success -> {
             LazyColumn(
                 modifier = modifier,
-                contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyTop = false,
-                    applyBottom = true,
-                    additionalBottom = 128.dp
-                ),
+                contentPadding = paddingValues,
             ) {
-                item {
-                    HeaderView(title = "App Groups")
-                }
-
                 items(
                     items = state.appGroupList,
                     key = { app ->
@@ -83,7 +74,8 @@ internal fun AppGroupsView(
                     },
                 ) { item ->
                     Surface(
-                        color = MaterialTheme.colors.surface
+                        color = MaterialTheme.colors.surface,
+                        elevation = 2.dp
                     ) {
                         Column(
                             Modifier
@@ -96,9 +88,9 @@ internal fun AppGroupsView(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = item.name,
-                                    style = MaterialTheme.typography.packageName,
-                                    modifier = Modifier.padding(bottom = 12.dp)
+                                    text = item.name.uppercase(Locale.getDefault()),
+                                    style = MaterialTheme.typography.body1,
+                                    modifier = Modifier.padding(bottom = 12.dp),
                                 )
 
                                 AppGroupView(
@@ -106,8 +98,6 @@ internal fun AppGroupsView(
                                     lines = 1,
                                 )
                             }
-
-                            Divider()
                         }
                     }
                 }

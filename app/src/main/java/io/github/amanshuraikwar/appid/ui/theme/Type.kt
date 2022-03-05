@@ -55,24 +55,8 @@ val AppIdTypography = Typography(
     )
 )
 
-val Typography.body1Bold: TextStyle
-    get() = body1.copy(fontWeight = FontWeight.Bold)
-
-val Typography.h6Bold: TextStyle
-    get() = h6.copy(fontWeight = FontWeight.Bold)
-
-val Typography.h4Bold: TextStyle
-    get() = h4.copy(fontWeight = FontWeight.Bold)
-
 val Typography.appName: TextStyle
     get() = subtitle1.copy(
-        fontFamily = RobotoMonoFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontFeatureSettings = "smcp"
-    )
-
-val Typography.packageName: TextStyle
-    get() = body2.copy(
         fontFamily = RobotoMonoFontFamily,
         fontWeight = FontWeight.Bold,
         fontFeatureSettings = "smcp"

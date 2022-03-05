@@ -5,12 +5,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -30,11 +32,16 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.amanshuraikwar.appid.appgroupdetail.AppGroupDetailView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
+import io.github.amanshuraikwar.appid.ui.ActionBarView
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeView() {
     val vm: HomeViewModel = viewModel()
@@ -49,19 +56,24 @@ fun HomeView() {
         ) {
             var actionBarHeight by remember { mutableStateOf(0) }
 
-            AppGroupsView(
+            ActionBarView(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = with(LocalDensity.current) { actionBarHeight.toDp() },
-                    ),
-                onAppGroupClick = vm::onAppGroupClick
+                    .clickable {
+                        actionBarHeight = 0
+                    }
+                    .onSizeChanged {
+                        actionBarHeight = it.height
+                    },
+                elevation = 0.dp
             )
 
-            ActionBarView(
-                modifier = Modifier.onSizeChanged {
-                    actionBarHeight = it.height
-                }
+            AppGroupsView(
+                paddingValues = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.navigationBars,
+                    additionalTop = with(LocalDensity.current) { actionBarHeight.toDp() },
+                    additionalBottom = 128.dp
+                ),
+                onAppGroupClick = vm::onAppGroupClick
             )
 
             BackHandler(
@@ -107,7 +119,7 @@ fun HomeView() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.background),
-                    onBackClick = vm::onBackClick
+                    onCloseClick = vm::onBackClick
                 )
             }
 

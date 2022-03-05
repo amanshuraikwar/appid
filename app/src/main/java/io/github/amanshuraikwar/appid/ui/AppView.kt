@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
-import io.github.amanshuraikwar.appid.ui.theme.packageName
 
 @Composable
 fun AppView(
@@ -49,7 +48,7 @@ fun AppView(
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = app.packageName,
-                    style = MaterialTheme.typography.packageName
+                    style = MaterialTheme.typography.body1
                 )
 
                 Text(

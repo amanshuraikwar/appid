@@ -1,17 +1,23 @@
 CREATE TABLE AppGroupEntity (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    packageName TEXT NOT NULL
+    name TEXT NOT NULL
 );
 
 insert:
-INSERT INTO AppGroupEntity(packageName)
-VALUES(:packageName);
+INSERT INTO AppGroupEntity(name)
+VALUES(:name);
 
 deleteAll:
 DELETE FROM AppGroupEntity;
+
+deleteById:
+DELETE FROM AppGroupEntity WHERE id = :id;
 
 findAll:
 SELECT * FROM AppGroupEntity;
 
 findById:
 SELECT * FROM AppGroupEntity WHERE id = :id;
+
+lastInsertRowId:
+SELECT last_insert_rowid();

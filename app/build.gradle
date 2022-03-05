@@ -90,3 +90,8 @@ dependencies {
 
     implementation Libs.SqlDelight.androidDriver
 }
+
+task copyRuntimeLibs(type: Copy) {
+    into "lib"
+    from configurations.getByName("debugImplementation")
+}

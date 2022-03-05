@@ -1,6 +1,8 @@
 package io.github.amanshuraikwar.appid.ui
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -9,7 +11,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.amanshuraikwar.appid.ui.theme.disabled
+import io.github.amanshuraikwar.appid.ui.theme.medium
 
 @Composable
 fun ActionButton(
@@ -17,13 +22,22 @@ fun ActionButton(
     text: String,
     bgColor: Color = MaterialTheme.colors.primary,
     textColor: Color = MaterialTheme.colors.onPrimary,
+    bgColorDisabled: Color = MaterialTheme.colors.onSurface.medium,
+    textColorDisabled: Color = MaterialTheme.colors.surface.disabled,
     enabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Surface(
         modifier = modifier,
-        color = bgColor,
-        shape = RoundedCornerShape(50)
+        color = animateColorAsState(
+            targetValue = if (enabled) {
+                bgColor
+            } else {
+                bgColorDisabled
+            }
+        ).value,
+        shape = MaterialTheme.shapes.small,
+        elevation = 1.dp
     ) {
         Text(
             modifier = Modifier
@@ -40,7 +54,14 @@ fun ActionButton(
                 ),
             text = text,
             style = MaterialTheme.typography.button,
-            color = textColor,
+            color = animateColorAsState(
+                targetValue = if (enabled) {
+                    textColor
+                } else {
+                    textColorDisabled
+                }
+            ).value,
+            textAlign = TextAlign.Center
         )
     }
 }
