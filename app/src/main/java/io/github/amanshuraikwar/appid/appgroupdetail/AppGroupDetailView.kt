@@ -38,18 +38,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.amanshuraikwar.appid.data.AppUninstaller
+import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.data.rememberAppLauncher
+import io.github.amanshuraikwar.appid.data.rememberAppUninstaller
+import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.ActionBarView
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppView
+import io.github.amanshuraikwar.appid.ui.ErrorView
 import io.github.amanshuraikwar.appid.ui.HeaderView
+import io.github.amanshuraikwar.appid.ui.UiError
+import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.outline
 
@@ -61,7 +66,7 @@ fun AppGroupDetailView(
 ) {
     val vm: AppGroupDetailViewModel = viewModel()
     val state by vm.state.collectAsState()
-    val ctx = LocalContext.current
+    val error by vm.error.collectAsUiErrorState()
 
     LaunchedEffect(
         key1 = id
@@ -76,18 +81,28 @@ fun AppGroupDetailView(
         }
     }
 
+    val appUninstaller = rememberAppUninstaller()
+
     AppGroupDetailView(
         modifier = modifier,
         state = state,
+        error = error,
         onDeleteClick = { appGroup ->
             vm.onDeleteClick(
                 appGroup = appGroup,
-                appUninstaller = AppUninstaller(context = ctx)
+                appUninstaller = appUninstaller
             )
         },
         onBackClick = onBackClick,
         onGridViewClick = vm::onGridViewClick,
         onListViewClick = vm::onListViewClick,
+        onAppDeleteClick = { appGroup, app ->
+            vm.onDeleteClick(
+                appGroup = appGroup,
+                app = app,
+                appUninstaller = appUninstaller
+            )
+        }
     )
 }
 
@@ -95,10 +110,12 @@ fun AppGroupDetailView(
 internal fun AppGroupDetailView(
     modifier: Modifier = Modifier,
     state: AppGroupDetailState,
+    error: UiError?,
     onDeleteClick: (AppGroup) -> Unit,
     onBackClick: () -> Unit,
     onGridViewClick: () -> Unit,
     onListViewClick: () -> Unit,
+    onAppDeleteClick: (AppGroup, App) -> Unit
 ) {
     Surface(
         modifier = modifier
@@ -214,13 +231,16 @@ internal fun AppGroupDetailView(
 
                         Divider()
 
+                        val appLauncher = rememberAppLauncher()
+
                         when (state.appDisplayType) {
                             AppGroupDetailState.AppDisplayType.GRID -> {
                                 AppGroupView(
                                     Modifier
                                         .fillMaxWidth()
                                         .padding(16.dp),
-                                    appGroup = state.appGroup
+                                    appGroup = state.appGroup,
+                                    onAppClick = appLauncher::launch
                                 )
                             }
                             AppGroupDetailState.AppDisplayType.LIST -> {
@@ -229,7 +249,13 @@ internal fun AppGroupDetailView(
                                         items = state.appGroup.apps,
                                         key = { it.packageName }
                                     ) { item ->
-                                        AppView(app = item)
+                                        AppView(
+                                            app = item,
+                                            onClick = appLauncher::launch,
+                                            onDeleteClick = {
+                                                onAppDeleteClick(state.appGroup, it)
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -294,6 +320,13 @@ internal fun AppGroupDetailView(
                     )
                 }
             }
+
+            ErrorView(
+                modifier = Modifier
+                    .statusBarsPadding(),
+                error = error,
+                enterFromBottom = false
+            )
         }
     }
 }

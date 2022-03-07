@@ -15,6 +15,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 fun Activity.isInDarkTheme(): Boolean {
     return application.resources.configuration.uiMode and
@@ -63,3 +67,7 @@ fun rememberImeAndNavBarInsetsPaddingValues(
         ) + with(LocalDensity.current) { extraPx.toDp() }
     )
 }
+
+fun <T> MutableSharedFlow<T>.toSharedFlow(): SharedFlow<T> = this
+
+fun <T> MutableStateFlow<T>.toStateFlow(): StateFlow<T> = this

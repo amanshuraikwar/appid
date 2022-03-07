@@ -6,15 +6,18 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.ref.WeakReference
 import java.util.*
 
 class AppUninstaller(
-    context: Context,
+    activity: ComponentActivity,
 ) {
-    private val activityWr = WeakReference(context as ComponentActivity)
+    private val activityWr = WeakReference(activity)
 
     suspend fun uninstall(packageName: String): UninstallResult {
         return activityWr
@@ -85,5 +88,13 @@ class AppUninstaller(
         object ActivityGced : UninstallResult()
         object Success : UninstallResult()
         object Failed : UninstallResult()
+    }
+}
+
+@Composable
+fun rememberAppUninstaller(): AppUninstaller {
+    val activity = LocalContext.current as ComponentActivity
+    return remember {
+        AppUninstaller(activity = activity)
     }
 }

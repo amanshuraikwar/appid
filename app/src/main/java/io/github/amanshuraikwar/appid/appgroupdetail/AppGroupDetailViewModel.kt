@@ -7,11 +7,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.amanshuraikwar.appid.CoroutinesDispatcherProvider
 import io.github.amanshuraikwar.appid.data.AppIdRepository
 import io.github.amanshuraikwar.appid.data.AppUninstaller
+import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
+import io.github.amanshuraikwar.appid.toSharedFlow
+import io.github.amanshuraikwar.appid.toStateFlow
+import io.github.amanshuraikwar.appid.ui.getUiErrorFlow
+import io.github.amanshuraikwar.appid.ui.tryEmitError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,10 +29,13 @@ internal class AppGroupDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state: MutableStateFlow<AppGroupDetailState> =
         MutableStateFlow(AppGroupDetailState.Loading)
-    val state: StateFlow<AppGroupDetailState> = _state
+    val state = _state.toStateFlow()
 
     private val _backClick = MutableSharedFlow<Boolean>()
-    val backClick: SharedFlow<Boolean> = _backClick
+    val backClick = _backClick.toSharedFlow()
+
+    private val _error = getUiErrorFlow()
+    val error = _error.toSharedFlow()
 
     fun init(id: String) {
         viewModelScope.launch(dispatcherProvider.computation) {
@@ -66,16 +72,69 @@ internal class AppGroupDetailViewModel @Inject constructor(
                     }
 
                     val uninstallResult = appUninstaller.uninstall(app.packageName)
-
-                    if (uninstallResult == AppUninstaller.UninstallResult.Success) {
-                        modifiedAppGroup = modifiedAppGroup.copy(
-                            apps = modifiedAppGroup.apps.filter {
-                                it.packageName != app.packageName
-                            }
-                        )
-                        appIdRepository.appWasUninstalled(app.packageName)
-                    }
                     Log.d(TAG, "onDeleteClick: $uninstallResult")
+
+                    when (uninstallResult) {
+                        AppUninstaller.UninstallResult.ActivityGced -> {
+                            // do nothing
+                        }
+                        AppUninstaller.UninstallResult.Failed -> {
+                            withContext(dispatcherProvider.main) {
+                                _error.tryEmitError("Could not uninstall ${app.name}!")
+                            }
+                        }
+                        AppUninstaller.UninstallResult.Success -> {
+                            modifiedAppGroup = modifiedAppGroup.copy(
+                                apps = modifiedAppGroup.apps.filter {
+                                    it.packageName != app.packageName
+                                }
+                            )
+                            appIdRepository.appWasUninstalled(app.packageName)
+                        }
+                    }
+                }
+            }
+
+            withContext(dispatcherProvider.main) {
+                _state.value = AppGroupDetailState.Success.Idle(
+                    appGroup = modifiedAppGroup,
+                    appDisplayType = appDisplayType,
+                )
+            }
+
+            if (modifiedAppGroup.apps.isEmpty()) {
+                _backClick.emit(true)
+            }
+        }
+    }
+
+    fun onDeleteClick(appGroup: AppGroup, app: App, appUninstaller: AppUninstaller) {
+        viewModelScope.launch(dispatcherProvider.computation) {
+            val appDisplayType = withContext(dispatcherProvider.main) {
+                (_state.value as? AppGroupDetailState.Success)?.appDisplayType
+            } ?: return@launch
+
+            var modifiedAppGroup = appGroup
+
+            val uninstallResult = appUninstaller.uninstall(app.packageName)
+            Log.d(TAG, "onDeleteClick: $uninstallResult")
+
+            when (uninstallResult) {
+                AppUninstaller.UninstallResult.ActivityGced -> {
+                    // do nothing
+                }
+                AppUninstaller.UninstallResult.Failed -> {
+                    withContext(dispatcherProvider.main) {
+                        _error.tryEmitError("Could not uninstall ${app.name}!")
+                    }
+                }
+                AppUninstaller.UninstallResult.Success -> {
+                    modifiedAppGroup = modifiedAppGroup.copy(
+                        apps = modifiedAppGroup.apps.filter {
+                            it.packageName != app.packageName
+                        }
+                    )
+                    appIdRepository.appWasUninstalled(app.packageName)
                 }
             }
 
