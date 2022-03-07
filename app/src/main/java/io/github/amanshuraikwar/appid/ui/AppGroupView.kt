@@ -1,6 +1,7 @@
 package io.github.amanshuraikwar.appid.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -23,6 +24,7 @@ fun AppGroupView(
     modifier: Modifier = Modifier,
     appList: List<App>,
     lines: Int? = null,
+    onAppClick: ((App) -> Unit)? = null
 ) {
     SubcomposeLayout(modifier = modifier) { constraints ->
         val iconWidthPx = 56.dp.toPx()
@@ -57,13 +59,24 @@ fun AppGroupView(
                     if (index == (perRow * totalLines - 1)) {
                         if (allApps.size - 1 == index) {
                             Surface(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize(),
                                 shape = MaterialTheme.shapes.small,
                                 color = MaterialTheme.colors.surface,
                                 elevation = 2.dp
                             ) {
                                 AppIconView(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .let {
+                                            if (onAppClick != null) {
+                                                it.clickable {
+                                                    onAppClick(app)
+                                                }
+                                            } else {
+                                                it
+                                            }
+                                        }
+                                        .fillMaxSize(),
                                     packageName = app.packageName,
                                 )
                             }
@@ -89,13 +102,24 @@ fun AppGroupView(
                         }
                     } else {
                         Surface(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize(),
                             shape = MaterialTheme.shapes.small,
                             color = MaterialTheme.colors.surface,
                             elevation = 2.dp
                         ) {
                             AppIconView(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .let {
+                                        if (onAppClick != null) {
+                                            it.clickable {
+                                                onAppClick(app)
+                                            }
+                                        } else {
+                                            it
+                                        }
+                                    }
+                                    .fillMaxSize(),
                                 packageName = app.packageName,
                             )
                         }
@@ -148,10 +172,12 @@ fun AppGroupView(
     modifier: Modifier = Modifier,
     appGroup: AppGroup,
     lines: Int? = null,
+    onAppClick: ((App) -> Unit)? = null
 ) {
     AppGroupView(
         modifier = modifier,
         appList = appGroup.apps,
-        lines = lines
+        lines = lines,
+        onAppClick = onAppClick
     )
 }

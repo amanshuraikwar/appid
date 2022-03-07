@@ -62,6 +62,7 @@ internal fun BottomBarView(
                 }
                 is AppGroupDetailState.Success.Idle -> {
                     ActionButton(
+                        Modifier.fillMaxWidth(),
                         text = "Delete All Apps",
                         onClick = onDeleteClick
                     )

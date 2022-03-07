@@ -13,10 +13,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.selectappspackage.SelectAppsPackageView
+import io.github.amanshuraikwar.appid.ui.UiError
+import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 
 @Composable
 fun CreateAppGroupView(
@@ -31,7 +36,8 @@ fun CreateAppGroupView(
 
     val appList: List<App> by vm.appList.collectAsState()
     val selectApps: Boolean by vm.selectApps.collectAsState()
-    val close: Boolean by vm.close.collectAsState()
+    val close by vm.close.collectAsState()
+    val error by vm.error.collectAsUiErrorState()
 
     LaunchedEffect(key1 = close) {
         if (close) {
@@ -42,6 +48,7 @@ fun CreateAppGroupView(
     CreateAppGroupView(
         modifier = modifier,
         appList = appList,
+        error = error,
         selectApps = selectApps,
         onCloseClick = onCloseClick,
         onCreateAppGroupClick = vm::onCreateAppGroupClick,
@@ -56,6 +63,7 @@ fun CreateAppGroupView(
 private fun CreateAppGroupView(
     modifier: Modifier = Modifier,
     appList: List<App>,
+    error: UiError?,
     selectApps: Boolean,
     onCloseClick: () -> Unit,
     onCreateAppGroupClick: (appGroupName: String) -> Unit,
@@ -69,6 +77,16 @@ private fun CreateAppGroupView(
         onBack = onAppsSelectedBackClick
     )
 
+    var appGroupName by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    DisposableEffect(key1 = true) {
+        onDispose {
+            appGroupName = ""
+        }
+    }
+
     Box(modifier = modifier) {
         AnimatedVisibility(
             visible = !selectApps,
@@ -77,7 +95,12 @@ private fun CreateAppGroupView(
         ) {
             AppGroupDetailView(
                 modifier = modifier,
+                appGroupName = appGroupName,
+                onAppGroupNameValueChange = {
+                    appGroupName = it
+                },
                 appList = appList,
+                error = error,
                 onCloseClick = onCloseClick,
                 onCreateAppGroupClick = onCreateAppGroupClick,
                 onSelectAppsClick = onSelectAppsClick,
