@@ -6,21 +6,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AppsOutage
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.ui.AppView
-import io.github.amanshuraikwar.appid.ui.HeaderView
-import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
 
 @Suppress("OPT_IN_IS_NOT_ENABLED")
@@ -57,19 +51,11 @@ internal fun AppsView(
             }
             is SelectAppsPackageState.NoApps -> {
                 Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "No matching apps!",
-                    style = MaterialTheme.typography.h4,
-                    color = MaterialTheme.colors.onBackground.medium
-                )
-
-                Icon(
-                    imageVector = Icons.Rounded.AppsOutage,
-                    contentDescription = "Search",
-                    tint = MaterialTheme.colors.onBackground.disabled,
                     modifier = Modifier
-                        .padding(16.dp)
-                        .size(128.dp)
+                        .padding(16.dp),
+                    text = "No matching apps found.",
+                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.colors.onBackground.medium
                 )
             }
             SelectAppsPackageState.Idle -> {
