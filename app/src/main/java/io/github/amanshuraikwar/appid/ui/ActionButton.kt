@@ -1,14 +1,14 @@
 package io.github.amanshuraikwar.appid.ui
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -27,41 +27,47 @@ fun ActionButton(
     enabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
-    Surface(
-        modifier = modifier,
-        color = animateColorAsState(
-            targetValue = if (enabled) {
-                bgColor
-            } else {
-                bgColorDisabled
-            }
-        ).value,
-        shape = MaterialTheme.shapes.small,
-        elevation = 1.dp
+    CompositionLocalProvider(
+        LocalIndication provides rememberAppIdIndication(
+            color = MaterialTheme.colors.onPrimary
+        )
     ) {
-        Text(
-            modifier = Modifier
-                .let {
-                    if (enabled) {
-                        it.clickable(onClick = onClick)
-                    } else {
-                        it
-                    }
-                }
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 12.dp
-                ),
-            text = text,
-            style = MaterialTheme.typography.button,
+        Surface(
+            modifier = modifier,
             color = animateColorAsState(
                 targetValue = if (enabled) {
-                    textColor
+                    bgColor
                 } else {
-                    textColorDisabled
+                    bgColorDisabled
                 }
             ).value,
-            textAlign = TextAlign.Center
-        )
+            shape = MaterialTheme.shapes.small,
+            elevation = 1.dp
+        ) {
+            Text(
+                modifier = Modifier
+                    .let {
+                        if (enabled) {
+                            it.clickable(onClick = onClick)
+                        } else {
+                            it
+                        }
+                    }
+                    .padding(
+                        horizontal = 16.dp,
+                        vertical = 12.dp
+                    ),
+                text = text,
+                style = MaterialTheme.typography.button,
+                color = animateColorAsState(
+                    targetValue = if (enabled) {
+                        textColor
+                    } else {
+                        textColorDisabled
+                    }
+                ).value,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }

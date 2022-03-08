@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,6 +41,7 @@ import io.github.amanshuraikwar.appid.ui.ActionButton
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
 import io.github.amanshuraikwar.appid.ui.ErrorView
+import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.UiError
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 
@@ -63,16 +63,12 @@ internal fun AppGroupDetailView(
         modifier.fillMaxSize(),
         actionBar = {
             ActionBarView {
-                Icon(
+                IconButton(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = "Close",
-                    tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier
-                        .padding(horizontal = 4.dp, vertical = 4.dp)
-                        .clip(shape = RoundedCornerShape(100))
-                        .clickable(onClick = onCloseClick)
-                        .padding(horizontal = 12.dp, vertical = 12.dp)
-                        .size(24.dp)
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    onClick = onCloseClick
                 )
             }
         },

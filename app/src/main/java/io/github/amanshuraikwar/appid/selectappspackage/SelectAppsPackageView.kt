@@ -16,7 +16,6 @@ import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
 import io.github.amanshuraikwar.appid.ui.ErrorView
-import io.github.amanshuraikwar.appid.ui.SearchBar
 import io.github.amanshuraikwar.appid.ui.UiError
 import kotlinx.coroutines.delay
 
@@ -65,9 +64,9 @@ internal fun SelectAppsPackageView(
     AppIdScaffold(
         modifier = modifier,
         actionBar = {
-            SearchBar(
-                onSearch = onSearch,
-                onBackClick = onBackClick
+            ActionBar(
+                onBackClick = onBackClick,
+                onSearch = onSearch
             )
         },
         bottomBar = {

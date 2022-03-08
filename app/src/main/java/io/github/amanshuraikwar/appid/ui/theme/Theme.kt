@@ -1,16 +1,20 @@
 package io.github.amanshuraikwar.appid.ui.theme
 
 import android.os.Build
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.insets.ProvideWindowInsets
+import io.github.amanshuraikwar.appid.ui.rememberAppIdIndication
 
 private val DarkColorPalette = darkColors(
     primary = blueLighter,
@@ -98,7 +102,11 @@ fun AppIdTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable 
         shapes = Shapes
     ) {
         ProvideWindowInsets {
-            content()
+            CompositionLocalProvider(
+                LocalIndication provides rememberAppIdIndication()
+            ) {
+                content()
+            }
         }
     }
 }
