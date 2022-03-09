@@ -41,4 +41,10 @@ internal class AppGroupsViewModel @Inject constructor(
                 }
         }
     }
+
+    fun onDeleteAppGroupClick(id: String) {
+        viewModelScope.launch {
+            appIdRepository.deleteAppGroup(id)
+        }
+    }
 }

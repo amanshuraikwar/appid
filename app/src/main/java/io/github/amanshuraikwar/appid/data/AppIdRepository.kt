@@ -12,6 +12,7 @@ interface AppIdRepository {
         apps: List<App>
     ): Boolean
     suspend fun getAppGroup(id: String): AppGroup?
+    suspend fun deleteAppGroup(id: String): Boolean
     suspend fun deleteApp(packageName: String)
     suspend fun appWasUninstalled(packageName: String)
     suspend fun updateInstalledAppCache()

@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.data
+package io.github.amanshuraikwar.appid.util
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
@@ -12,14 +12,18 @@ class AppLauncher(
 ) {
     private val activityWr = WeakReference(activity)
 
-    fun launch(app: App) {
-        activityWr
-            .get()
-            ?.let { activity ->
-                activity.startActivity(
-                    activity.packageManager.getLaunchIntentForPackage(app.packageName)
-                )
-            }
+    fun launch(app: App): Boolean {
+        return runCatching {
+            activityWr
+                .get()
+                ?.let { activity ->
+                    activity.startActivity(
+                        activity.packageManager.getLaunchIntentForPackage(app.packageName)
+                    )
+                    true
+                }
+                ?: false
+        }.getOrNull() ?: false
     }
 }
 

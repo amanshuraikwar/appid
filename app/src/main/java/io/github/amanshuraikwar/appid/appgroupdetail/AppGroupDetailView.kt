@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.ViewList
 import androidx.compose.runtime.Composable
@@ -43,8 +45,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.statusBarsPadding
-import io.github.amanshuraikwar.appid.data.rememberAppLauncher
-import io.github.amanshuraikwar.appid.data.rememberAppUninstaller
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
@@ -53,10 +53,13 @@ import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppView
 import io.github.amanshuraikwar.appid.ui.ErrorView
 import io.github.amanshuraikwar.appid.ui.HeaderView
+import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.UiError
 import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.outline
+import io.github.amanshuraikwar.appid.util.rememberAppLauncher
+import io.github.amanshuraikwar.appid.util.rememberAppUninstaller
 
 @Composable
 fun AppGroupDetailView(
@@ -87,7 +90,7 @@ fun AppGroupDetailView(
         modifier = modifier,
         state = state,
         error = error,
-        onDeleteClick = { appGroup ->
+        onDeleteAllAppsClick = { appGroup ->
             vm.onDeleteClick(
                 appGroup = appGroup,
                 appUninstaller = appUninstaller
@@ -102,7 +105,8 @@ fun AppGroupDetailView(
                 app = app,
                 appUninstaller = appUninstaller
             )
-        }
+        },
+        onDeleteAppGroupClick = vm::onDeleteAppGroupClick
     )
 }
 
@@ -111,11 +115,12 @@ internal fun AppGroupDetailView(
     modifier: Modifier = Modifier,
     state: AppGroupDetailState,
     error: UiError?,
-    onDeleteClick: (AppGroup) -> Unit,
+    onDeleteAllAppsClick: (AppGroup) -> Unit,
     onBackClick: () -> Unit,
     onGridViewClick: () -> Unit,
     onListViewClick: () -> Unit,
-    onAppDeleteClick: (AppGroup, App) -> Unit
+    onAppDeleteClick: (AppGroup, App) -> Unit,
+    onDeleteAppGroupClick: (AppGroup) -> Unit,
 ) {
     Surface(
         modifier = modifier
@@ -282,7 +287,7 @@ internal fun AppGroupDetailView(
                                 .padding(rememberImeAndNavBarInsetsPaddingValues()),
                             state = state,
                             onDeleteClick = {
-                                onDeleteClick(state.appGroup)
+                                onDeleteAllAppsClick(state.appGroup)
                             }
                         )
                     }
@@ -295,17 +300,31 @@ internal fun AppGroupDetailView(
                 }
             ) {
                 Column {
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp, vertical = 4.dp)
-                            .clip(shape = RoundedCornerShape(100))
-                            .clickable(onClick = onBackClick)
-                            .padding(horizontal = 12.dp, vertical = 12.dp)
-                            .size(24.dp)
-                    )
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        IconButton(
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp, vertical = 4.dp),
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = "Back",
+                            onClick = onBackClick
+                        )
+
+                        if (state is AppGroupDetailState.Success) {
+                            IconButton(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                                imageVector = Icons.Rounded.Delete,
+                                contentDescription = "Delete",
+                                onClick = {
+                                    onDeleteAppGroupClick(state.appGroup)
+                                },
+                                foregroundColor = MaterialTheme.colors.error
+                            )
+                        }
+                    }
 
                     Text(
                         modifier = Modifier
