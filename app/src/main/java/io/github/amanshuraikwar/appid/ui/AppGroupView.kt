@@ -63,7 +63,7 @@ fun AppGroupView(
                                     .fillMaxSize(),
                                 shape = MaterialTheme.shapes.small,
                                 color = MaterialTheme.colors.surface,
-                                elevation = 2.dp
+//                                elevation = 2.dp
                             ) {
                                 AppIconView(
                                     modifier = Modifier
@@ -106,7 +106,7 @@ fun AppGroupView(
                                 .fillMaxSize(),
                             shape = MaterialTheme.shapes.small,
                             color = MaterialTheme.colors.surface,
-                            elevation = 2.dp
+//                            elevation = 2.dp
                         ) {
                             AppIconView(
                                 modifier = Modifier

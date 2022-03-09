@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.amanshuraikwar.appid.CoroutinesDispatcherProvider
 import io.github.amanshuraikwar.appid.data.AppIdRepository
-import io.github.amanshuraikwar.appid.data.AppUninstaller
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.toSharedFlow
 import io.github.amanshuraikwar.appid.toStateFlow
 import io.github.amanshuraikwar.appid.ui.getUiErrorFlow
 import io.github.amanshuraikwar.appid.ui.tryEmitError
+import io.github.amanshuraikwar.appid.util.AppUninstaller
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
@@ -175,6 +175,14 @@ internal class AppGroupDetailViewModel @Inject constructor(
             if (currentState is AppGroupDetailState.Success.DeletionInProgress) {
                 _state.value =
                     currentState.copy(appDisplayType = AppGroupDetailState.AppDisplayType.LIST)
+            }
+        }
+    }
+
+    fun onDeleteAppGroupClick(appGroup: AppGroup) {
+        viewModelScope.launch {
+            if (appIdRepository.deleteAppGroup(appGroup.id)) {
+                _backClick.emit(true)
             }
         }
     }

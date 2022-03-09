@@ -177,6 +177,25 @@ class AppIdRepositoryImpl(
         }
     }
 
+    override suspend fun deleteAppGroup(id: String): Boolean {
+        return withContext(dispatcherProvider.io) {
+            suspendCancellableCoroutine { cont ->
+                appIdDb.transaction {
+                    appIdDb.appGroupEntityQueries.deleteById(id = id.toLong())
+                    appIdDb.appGroupAppListEntityQueries.deleteAllByGroupId(
+                        groupId = id.toLong()
+                    )
+                    afterCommit {
+                        cont.resumeWith(Result.success(true))
+                    }
+                    afterRollback {
+                        cont.resumeWith(Result.success(false))
+                    }
+                }
+            }
+        }
+    }
+
     override suspend fun deleteApp(packageName: String) {
         withContext(dispatcherProvider.io) {
             packageManager.packageInstaller.uninstall(

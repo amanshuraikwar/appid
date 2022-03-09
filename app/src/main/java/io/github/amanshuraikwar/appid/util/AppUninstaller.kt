@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.data
+package io.github.amanshuraikwar.appid.util
 
 import android.content.Context
 import android.content.Intent

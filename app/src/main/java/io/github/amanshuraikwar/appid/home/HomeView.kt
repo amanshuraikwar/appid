@@ -48,11 +48,13 @@ fun HomeView() {
     val state by vm.state.collectAsState()
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        modifier = Modifier
+            .fillMaxSize(),
+        color = MaterialTheme.colors.surface
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
         ) {
             var actionBarHeight by remember { mutableStateOf(0) }
 
