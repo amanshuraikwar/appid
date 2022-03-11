@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
@@ -23,12 +24,13 @@ import kotlin.math.roundToInt
 fun AppGroupView(
     modifier: Modifier = Modifier,
     appList: List<App>,
+    appIconSize: Dp = 56.dp,
     lines: Int? = null,
     onAppClick: ((App) -> Unit)? = null
 ) {
     SubcomposeLayout(modifier = modifier) { constraints ->
-        val iconWidthPx = 56.dp.toPx()
-        val iconHeightPx = 56.dp.toPx()
+        val iconWidthPx = appIconSize.toPx()
+        val iconHeightPx = appIconSize.toPx()
         val minimumHorizontalPadding = 8.dp.toPx()
         val minimumVerticalPadding = 8.dp.toPx()
 
@@ -63,7 +65,7 @@ fun AppGroupView(
                                     .fillMaxSize(),
                                 shape = MaterialTheme.shapes.small,
                                 color = MaterialTheme.colors.surface,
-//                                elevation = 2.dp
+                                elevation = 1.dp
                             ) {
                                 AppIconView(
                                     modifier = Modifier
@@ -106,7 +108,7 @@ fun AppGroupView(
                                 .fillMaxSize(),
                             shape = MaterialTheme.shapes.small,
                             color = MaterialTheme.colors.surface,
-//                            elevation = 2.dp
+                            elevation = 1.dp
                         ) {
                             AppIconView(
                                 modifier = Modifier
@@ -171,12 +173,14 @@ fun AppGroupView(
 fun AppGroupView(
     modifier: Modifier = Modifier,
     appGroup: AppGroup,
+    appIconSize: Dp = 56.dp,
     lines: Int? = null,
     onAppClick: ((App) -> Unit)? = null
 ) {
     AppGroupView(
         modifier = modifier,
         appList = appGroup.apps,
+        appIconSize = appIconSize,
         lines = lines,
         onAppClick = onAppClick
     )

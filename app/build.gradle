@@ -16,7 +16,19 @@ sqldelight {
     }
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
+    signingConfigs {
+        release {
+            storeFile file(localProperties['keystore.file.path'])
+            storePassword localProperties['keystore.password']
+            keyAlias localProperties['keystore.key.alias']
+            keyPassword localProperties['keystore.key.password']
+        }
+    }
+
     compileSdk Libs.compileSdk
 
     defaultConfig {
@@ -25,18 +37,23 @@ android {
         targetSdk Libs.targetSdk
 
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            applicationIdSuffix ".debug"
         }
     }
 
@@ -89,9 +106,4 @@ dependencies {
     implementation Libs.Coil.compose
 
     implementation Libs.SqlDelight.androidDriver
-}
-
-task copyRuntimeLibs(type: Copy) {
-    into "lib"
-    from configurations.getByName("debugImplementation")
 }

@@ -14,50 +14,61 @@ private val RubikFontFamily = FontFamily(
     Font(R.font.rubik_medium, FontWeight.Medium)
 )
 
-private val CabinFontFamily = FontFamily(
-    Font(R.font.cabin),
-)
-
 private val RobotoMonoFontFamily = FontFamily(
     Font(R.font.roboto_mono),
 )
 
+private val RobotoSlabFontFamily = FontFamily(
+    Font(R.font.roboto_slab_medium, FontWeight.Medium),
+)
+
 val AppIdTypography = Typography(
     defaultFontFamily = RubikFontFamily,
+    h5 = TextStyle(
+        fontFamily = RobotoSlabFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        letterSpacing = 0.sp
+    ),
     h3 = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 48.sp,
         letterSpacing = 0.sp
     ),
     subtitle1 = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        letterSpacing = 0.15.sp
-    ),
-    button = TextStyle(
         fontFamily = RobotoMonoFontFamily,
         fontWeight = FontWeight.Bold,
-        fontFeatureSettings = "smcp",
-        fontSize = 14.sp,
-        letterSpacing = 1.25.sp,
+        fontSize = 16.sp,
+        letterSpacing = 0.4.sp
     ),
     caption = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         letterSpacing = 0.4.sp,
-        fontFamily = CabinFontFamily
     ),
     overline = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 10.sp,
         letterSpacing = 1.5.sp,
-        fontFamily = CabinFontFamily
-    )
+    ),
+    body1 = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        letterSpacing = 0.5.sp,
+        lineHeight = 22.sp
+    ),
 )
 
 val Typography.appName: TextStyle
     get() = subtitle1.copy(
-        fontFamily = RobotoMonoFontFamily,
+        fontFamily = RobotoSlabFontFamily,
         fontWeight = FontWeight.Bold,
-        fontFeatureSettings = "smcp"
+        fontFeatureSettings = "smcp",
+        letterSpacing = 2.sp
+    )
+
+val Typography.packageName: TextStyle
+    get() = body2.copy(
+        fontFamily = RobotoMonoFontFamily,
+        fontFeatureSettings = "smcp",
     )
