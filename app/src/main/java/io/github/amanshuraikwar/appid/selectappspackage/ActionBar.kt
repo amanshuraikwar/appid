@@ -76,13 +76,13 @@ internal fun ActionBar(
                 targetValue = if (inFocus) {
                     0.dp
                 } else {
-                    56.dp
+                    72.dp
                 }
             )
 
             val paddingStartInverse by animateDpAsState(
                 targetValue = if (inFocus) {
-                    56.dp
+                    72.dp
                 } else {
                     0.dp
                 }

@@ -57,7 +57,7 @@ fun ActionButton(
                         horizontal = 16.dp,
                         vertical = 12.dp
                     ),
-                text = text,
+                text = text.uppercase(),
                 style = MaterialTheme.typography.button,
                 color = animateColorAsState(
                     targetValue = if (enabled) {

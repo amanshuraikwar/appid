@@ -2,7 +2,9 @@ package io.github.amanshuraikwar.appid.appgroups
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -18,11 +20,13 @@ import java.util.*
 
 @Composable
 internal fun AppGroupItemView(
+    modifier: Modifier = Modifier,
     appGroup: AppGroup,
     onClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
 ) {
     SwipeableButtonView(
+        modifier = modifier,
         btnIcon = Icons.Rounded.Delete,
         btnContentDescription = "Delete",
         btnBackgroundColor = MaterialTheme.colors.error,
@@ -31,29 +35,36 @@ internal fun AppGroupItemView(
     ) {
         Surface(
             color = MaterialTheme.colors.surface,
-            elevation = 2.dp
         ) {
             Column(
                 Modifier
                     .clickable {
                         onClick(appGroup.id)
                     }
+                    .padding(top = 16.dp)
             ) {
-                Column(
-                    Modifier
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = appGroup.name.uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.body1,
-                        modifier = Modifier.padding(bottom = 12.dp),
-                    )
+                Text(
 
-                    AppGroupView(
-                        appGroup = appGroup,
-                        lines = 1,
-                    )
-                }
+                    text = appGroup.name.uppercase(Locale.getDefault()),
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                        .padding(horizontal = 16.dp),
+                )
+
+                AppGroupView(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    appGroup = appGroup,
+                    lines = 1,
+                    appIconSize = 40.dp
+                )
+
+                Divider(
+                    Modifier.padding(top = 16.dp)
+                )
             }
         }
     }

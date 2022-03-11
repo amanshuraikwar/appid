@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,8 +21,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Apps
-import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.CatchingPokemon
+import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Title
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,17 +33,19 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.imePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
-import io.github.amanshuraikwar.appid.ui.ActionBarView
 import io.github.amanshuraikwar.appid.ui.ActionButton
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
 import io.github.amanshuraikwar.appid.ui.ErrorView
-import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.UiError
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 
@@ -60,25 +64,33 @@ internal fun AppGroupDetailView(
     val focusRequester = remember { FocusRequester() }
 
     AppIdScaffold(
-        modifier.fillMaxSize(),
+        modifier
+            .fillMaxSize(),
         actionBar = {
-            ActionBarView {
-                IconButton(
-                    imageVector = Icons.Rounded.Close,
+            Column {
+                Icon(
+                    imageVector = Icons.Rounded.ExpandMore,
                     contentDescription = "Close",
                     modifier = Modifier
-                        .padding(horizontal = 4.dp, vertical = 4.dp),
-                    onClick = onCloseClick
+                        .clickable(onClick = onCloseClick)
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(8.dp)
+                        .size(40.dp)
                 )
+
+                Divider()
             }
         },
         bottomBar = {
-            Surface(
-                color = MaterialTheme.colors.surface
-            ) {
+//            Surface(
+//                color = MaterialTheme.colors.surface
+//            ) {
                 Column(
                     Modifier
-                        .padding(rememberImeAndNavBarInsetsPaddingValues())
+                        .navigationBarsPadding()
+                        .imePadding()
+//                        .padding(rememberImeAndNavBarInsetsPaddingValues())
                 ) {
                     Divider()
 
@@ -92,13 +104,13 @@ internal fun AppGroupDetailView(
                         }
                     )
                 }
-            }
+//            }
         }
     ) {
         Box(
-            Modifier
-                .background(MaterialTheme.colors.surface)
-                .fillMaxSize(),
+//            Modifier
+//                .background(MaterialTheme.colors.surface)
+//                .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Column(
@@ -115,7 +127,8 @@ internal fun AppGroupDetailView(
                     onValueChange = onAppGroupNameValueChange,
                     textStyle = MaterialTheme.typography.h5.merge(
                         TextStyle(
-                            color = MaterialTheme.colors.onSurface
+                            color = MaterialTheme.colors.onSurface,
+                            fontWeight = FontWeight.Medium
                         )
                     ),
                     singleLine = true,
@@ -145,7 +158,7 @@ internal fun AppGroupDetailView(
                                 }
                             ).value,
                             modifier = Modifier
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = 24.dp)
                                 .size(24.dp)
                         )
 
@@ -153,17 +166,18 @@ internal fun AppGroupDetailView(
                             Text(
                                 text = "App group name",
                                 modifier = Modifier
-                                    .padding(start = 56.dp, end = 16.dp)
+                                    .padding(start = 72.dp, end = 16.dp)
                                     .align(Alignment.CenterStart),
                                 color = MaterialTheme.colors.onSurface.disabled,
                                 style = MaterialTheme.typography.h5,
+                                fontWeight = FontWeight.Medium
                             )
                         }
 
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 56.dp, end = 16.dp)
+                                .padding(start = 72.dp, end = 16.dp)
                                 .padding(vertical = 8.dp)
                         ) {
                             innerTextField()
@@ -187,7 +201,7 @@ internal fun AppGroupDetailView(
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Apps,
+                            imageVector = Icons.Rounded.CatchingPokemon,
                             contentDescription = "Apps",
                             tint = animateColorAsState(
                                 targetValue = if (appList.isEmpty()) {
@@ -197,13 +211,13 @@ internal fun AppGroupDetailView(
                                 }
                             ).value,
                             modifier = Modifier
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = 24.dp)
                                 .size(24.dp)
                         )
 
                         Text(
                             modifier = Modifier
-                                .padding(start = 56.dp, end = 16.dp),
+                                .padding(start = 72.dp, end = 16.dp),
                             text = if (appList.isEmpty()) {
                                 "Click to select apps"
                             } else {
@@ -224,7 +238,7 @@ internal fun AppGroupDetailView(
                         AppGroupView(
                             modifier = Modifier
                                 .padding(
-                                    start = 56.dp,
+                                    start = 72.dp,
                                     end = 16.dp,
                                     bottom = 2.dp,
                                     top = 2.dp

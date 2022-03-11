@@ -76,6 +76,7 @@ internal fun SelectAppsPackageView(
                 BottomBarView(
                     modifier = Modifier
                         .padding(rememberImeAndNavBarInsetsPaddingValues()),
+                    state = state,
                     onSelectClick = onSelectClick
                 )
             }
