@@ -1,6 +1,5 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,10 @@ internal fun AppsView(
     modifier: Modifier = Modifier,
     state: SelectAppsPackageState,
 ) {
-    Column(modifier.background(MaterialTheme.colors.surface)) {
+    Column(
+        modifier
+            .background(MaterialTheme.colors.surface)
+    ) {
         when (state) {
             is SelectAppsPackageState.Success -> {
                 Box(

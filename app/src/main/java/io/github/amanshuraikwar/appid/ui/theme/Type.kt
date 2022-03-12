@@ -31,9 +31,16 @@ val AppIdTypography = Typography(
         letterSpacing = 0.sp
     ),
     h3 = TextStyle(
+        fontFamily = RobotoSlabFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 48.sp,
         letterSpacing = 0.sp
+    ),
+    h6 = TextStyle(
+        fontFamily = RobotoSlabFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        letterSpacing = 0.15.sp
     ),
     subtitle1 = TextStyle(
         fontFamily = RobotoMonoFontFamily,
@@ -65,6 +72,14 @@ val Typography.appName: TextStyle
         fontWeight = FontWeight.Bold,
         fontFeatureSettings = "smcp",
         letterSpacing = 2.sp
+    )
+
+val Typography.appNameLarge: TextStyle
+    get() = h3.copy(
+        fontFamily = RobotoSlabFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontFeatureSettings = "smcp",
+        letterSpacing = 12.sp
     )
 
 val Typography.packageName: TextStyle
