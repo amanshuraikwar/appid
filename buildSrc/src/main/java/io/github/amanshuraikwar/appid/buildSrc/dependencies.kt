@@ -108,7 +108,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val insets = "com.google.accompanist:accompanist-insets:0.24.2-alpha"
+        const val insets = "com.google.accompanist:accompanist-insets:0.24.3-alpha"
     }
 
     object SqlDelight {

@@ -1,6 +1,7 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.model.App
@@ -76,22 +78,28 @@ internal fun SelectAppsPackageView(
                 BottomBarView(
                     modifier = Modifier
                         .padding(rememberImeAndNavBarInsetsPaddingValues()),
+                    state = state,
                     onSelectClick = onSelectClick
                 )
             }
         }
     ) {
-        AppsView(
-            Modifier
-                .clickable { }
-                .fillMaxSize(),
-            state = state,
-        )
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            AppsView(
+                Modifier
+                    .clickable(enabled = false) { }
+                    .fillMaxSize(),
+                state = state,
+            )
 
-        ErrorView(
-            error = error,
-            enterFromBottom = false
-        )
+            ErrorView(
+                error = error,
+                enterFromBottom = true
+            )
+        }
     }
 }
 

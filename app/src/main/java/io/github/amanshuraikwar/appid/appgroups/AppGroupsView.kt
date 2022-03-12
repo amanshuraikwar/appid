@@ -1,28 +1,22 @@
 package io.github.amanshuraikwar.appid.appgroups
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.Outlet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.amanshuraikwar.appid.ui.LoadingView
-import io.github.amanshuraikwar.appid.ui.theme.disabled
-import io.github.amanshuraikwar.appid.ui.theme.medium
+import io.github.amanshuraikwar.appid.ui.ProgressView
+import io.github.amanshuraikwar.appid.ui.EmptyStateView
 
 @Composable
 fun AppGroupsView(
@@ -42,6 +36,7 @@ fun AppGroupsView(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Suppress("OPT_IN_IS_NOT_ENABLED")
 @Composable
 internal fun AppGroupsView(
@@ -53,10 +48,14 @@ internal fun AppGroupsView(
 ) {
     when (state) {
         AppGroupsState.Fetching -> {
-            LoadingView(
-                modifier = modifier.fillMaxWidth(),
-                text = "Loading app groups..."
-            )
+            Box(
+                modifier = modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressView()
+            }
         }
         is AppGroupsState.Success -> {
             LazyColumn(
@@ -70,6 +69,7 @@ internal fun AppGroupsView(
                     },
                 ) { item ->
                     AppGroupItemView(
+                        modifier = Modifier.animateItemPlacement(),
                         appGroup = item,
                         onClick = onAppGroupClick,
                         onDeleteClick = onDeleteAppGroupClick
@@ -78,29 +78,15 @@ internal fun AppGroupsView(
             }
         }
         AppGroupsState.Empty -> {
-            Column(
-                modifier = modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Apps,
-                    contentDescription = "Search",
-                    tint = MaterialTheme.colors.primary.disabled,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(32.dp)
-                        .size(128.dp)
-                )
-
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(16.dp),
-                    text = "You have not created aby app groups yet.",
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.primary.medium,
-                    textAlign = TextAlign.Center
-                )
-            }
+            EmptyStateView(
+                modifier = modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                imageVector = Icons.Rounded.Outlet,
+                contentDescription = "No App Groups",
+                title = "Nothing to see here",
+                description = "Create an app group and it will show up here",
+            )
         }
     }
 }

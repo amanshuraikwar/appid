@@ -28,7 +28,7 @@ fun IconButton(
         modifier = modifier
             .clip(shape = MaterialTheme.shapes.small)
             .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 12.dp)
+            .padding(12.dp)
             .size(24.dp)
     )
 }
