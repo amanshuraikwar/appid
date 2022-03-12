@@ -67,11 +67,11 @@ fun ErrorView(
     ) {
         Surface(
             modifier = Modifier
-                .padding(4.dp)
+//                .padding(4.dp)
                 .fillMaxWidth(),
-            elevation = 1.dp,
-            color = MaterialTheme.colors.error,
-            shape = MaterialTheme.shapes.small
+//            elevation = 1.dp,
+            color = MaterialTheme.colors.onError,
+//            shape = MaterialTheme.shapes.small
         ) {
             Row(
                 Modifier
@@ -84,7 +84,7 @@ fun ErrorView(
                         .size(24.dp),
                     imageVector = Icons.Rounded.Error,
                     contentDescription = "Error",
-                    tint = MaterialTheme.colors.onError
+                    tint = MaterialTheme.colors.error
                 )
 
                 Text(
@@ -93,7 +93,8 @@ fun ErrorView(
                         .padding(vertical = 16.dp)
                         .padding(end = 16.dp),
                     text = message,
-                    color = MaterialTheme.colors.onError
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2
                 )
             }
         }

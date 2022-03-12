@@ -87,7 +87,7 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                 is SelectAppsPackageState.NoApps -> {
                     withContext(dispatcherProvider.main) {
                         _error.tryEmit(null)
-                        _error.tryEmit(UiError("There are not apps to select!"))
+                        _error.tryEmit(UiError("There are no apps to select."))
                         _error.tryEmit(null)
                     }
                 }
@@ -96,7 +96,7 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                         currentState.apps.size > 20 -> {
                             withContext(dispatcherProvider.main) {
                                 _error.tryEmit(null)
-                                _error.tryEmit(UiError("We cannot select more than 20 apps!"))
+                                _error.tryEmit(UiError("Please select less than 20 apps."))
                                 _error.tryEmit(null)
                             }
                         }

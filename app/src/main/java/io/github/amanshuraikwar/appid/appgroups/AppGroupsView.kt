@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.amanshuraikwar.appid.appgroupdetail.ProgressView
+import io.github.amanshuraikwar.appid.ui.ProgressView
 import io.github.amanshuraikwar.appid.ui.EmptyStateView
 
 @Composable

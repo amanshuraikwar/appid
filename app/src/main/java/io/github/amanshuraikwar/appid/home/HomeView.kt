@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,8 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import io.github.amanshuraikwar.appid.about.AboutView
+import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
 import io.github.amanshuraikwar.appid.appgroupdetail.AppGroupDetailView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
@@ -51,7 +53,9 @@ fun HomeView() {
                 modifier = Modifier
                     .fillMaxSize(),
                 actionBar = {
-                    Column {
+                    Column(
+                        Modifier.clickable(onClick = vm::onAboutClick)
+                    ) {
                         ActionBarView(
                             elevation = 0.dp
                         )
@@ -76,7 +80,8 @@ fun HomeView() {
             BackHandler(
                 enabled =
                 state == HomeViewState.CreateAppGroup
-                        || state is HomeViewState.AppGroupDetail,
+                        || state is HomeViewState.AppGroupDetail
+                        || state is HomeViewState.About,
                 onBack = vm::onBackClick
             )
 
@@ -84,7 +89,7 @@ fun HomeView() {
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .navigationBarsPadding()
+                    .acmNavigationBarsPadding()
                     .padding(bottom = 16.dp, end = 16.dp),
                 backgroundColor = MaterialTheme.colors.primary,
                 onClick = vm::onCreateAppGroupClick
@@ -136,6 +141,18 @@ fun HomeView() {
                         },
                     )
                 }
+            }
+
+            AnimatedVisibility(
+                visible = state == HomeViewState.About,
+                enter = slideInVertically {
+                    -it
+                },
+                exit = slideOutVertically {
+                    -it
+                }
+            ) {
+                AboutView(onBackClick = vm::onBackClick)
             }
         }
     }

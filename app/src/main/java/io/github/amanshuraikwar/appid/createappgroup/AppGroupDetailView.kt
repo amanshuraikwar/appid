@@ -8,27 +8,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CatchingPokemon
+import androidx.compose.material.icons.rounded.ClearAll
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Title
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
@@ -37,15 +34,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.imePadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
+import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.rememberImeAndNavBarInsetsPaddingValues
 import io.github.amanshuraikwar.appid.ui.ActionButton
 import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
 import io.github.amanshuraikwar.appid.ui.ErrorView
+import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.UiError
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 
@@ -74,7 +70,7 @@ internal fun AppGroupDetailView(
                     modifier = Modifier
                         .clickable(onClick = onCloseClick)
                         .fillMaxWidth()
-                        .statusBarsPadding()
+                        .acmStatusBarsPadding()
                         .padding(8.dp)
                         .size(40.dp)
                 )
@@ -83,34 +79,26 @@ internal fun AppGroupDetailView(
             }
         },
         bottomBar = {
-//            Surface(
-//                color = MaterialTheme.colors.surface
-//            ) {
-                Column(
-                    Modifier
-                        .navigationBarsPadding()
-                        .imePadding()
-//                        .padding(rememberImeAndNavBarInsetsPaddingValues())
-                ) {
-                    Divider()
+            Column(
+                Modifier
+                    .background(MaterialTheme.colors.surface)
+                    .padding(rememberImeAndNavBarInsetsPaddingValues())
+            ) {
+                Divider()
 
-                    ActionButton(
-                        Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        text = "Create App Group",
-                        onClick = {
-                            onCreateAppGroupClick(appGroupName)
-                        }
-                    )
-                }
-//            }
+                ActionButton(
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    text = "Create App Group",
+                    onClick = {
+                        onCreateAppGroupClick(appGroupName)
+                    }
+                )
+            }
         }
     ) {
         Box(
-//            Modifier
-//                .background(MaterialTheme.colors.surface)
-//                .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             Column(
@@ -195,9 +183,7 @@ internal fun AppGroupDetailView(
                 ) {
                     Box(
                         modifier = Modifier
-                            .clickable(onClick = onSelectAppsClick)
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Icon(
@@ -211,18 +197,20 @@ internal fun AppGroupDetailView(
                                 }
                             ).value,
                             modifier = Modifier
+                                .padding(vertical = 16.dp)
                                 .padding(horizontal = 24.dp)
                                 .size(24.dp)
                         )
 
                         Text(
                             modifier = Modifier
+                                .padding(vertical = 16.dp)
                                 .padding(start = 72.dp, end = 16.dp),
                             text = if (appList.isEmpty()) {
                                 "Click to select apps"
                             } else {
                                 "Selected apps"
-                            },
+                            }.uppercase(),
                             color = animateColorAsState(
                                 targetValue = if (appList.isEmpty()) {
                                     MaterialTheme.colors.onSurface.disabled
@@ -230,8 +218,20 @@ internal fun AppGroupDetailView(
                                     MaterialTheme.colors.primary
                                 }
                             ).value,
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.button,
                         )
+
+                        if (appList.isNotEmpty()) {
+                            IconButton(
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 4.dp),
+                                imageVector = Icons.Rounded.ClearAll,
+                                contentDescription = "Clear All",
+                                onClick = onClearAppsClick,
+                                foregroundColor = MaterialTheme.colors.error
+                            )
+                        }
                     }
 
                     if (appList.isNotEmpty()) {
@@ -240,27 +240,11 @@ internal fun AppGroupDetailView(
                                 .padding(
                                     start = 72.dp,
                                     end = 16.dp,
-                                    bottom = 2.dp,
-                                    top = 2.dp
+                                    bottom = 16.dp,
+                                    top = 16.dp
                                 ),
-                            appList = appList
-                        )
-
-                        Text(
-                            text = "Clear Apps",
-                            style = MaterialTheme.typography.button,
-                            color = MaterialTheme.colors.error,
-                            modifier = Modifier
-                                .padding(
-                                    start = 56.dp,
-                                    end = 16.dp,
-                                    bottom = 8.dp,
-                                    top = 8.dp
-                                )
-                                .align(Alignment.End)
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable(onClick = onClearAppsClick)
-                                .padding(horizontal = 16.dp, vertical = 12.dp)
+                            appList = appList,
+                            appIconSize = 48.dp
                         )
                     }
                 }

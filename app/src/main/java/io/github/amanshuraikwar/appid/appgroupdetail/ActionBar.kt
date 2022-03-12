@@ -91,7 +91,12 @@ fun ActionBar(
 
                 Text(
                     modifier = Modifier
-                        .padding(top = 48.dp, start = 16.dp, bottom = 24.dp, end = 16.dp),
+                        .padding(
+                            top = 48.dp,
+                            start = 16.dp,
+                            bottom = 24.dp,
+                            end = 16.dp
+                        ),
                     text = when (state) {
                         is AppGroupDetailState.AppGroupNotFound -> "App group not found"
                         AppGroupDetailState.Loading -> ""

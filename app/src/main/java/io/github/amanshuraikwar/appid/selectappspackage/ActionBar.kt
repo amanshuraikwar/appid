@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.SearchBar
 
@@ -142,7 +142,7 @@ internal fun ActionBar(
 
             IconButton(
                 modifier = Modifier
-                    .statusBarsPadding()
+                    .acmStatusBarsPadding()
                     .align(Alignment.CenterStart)
                     .padding(4.dp),
                 imageVector = Icons.Rounded.ArrowBack,

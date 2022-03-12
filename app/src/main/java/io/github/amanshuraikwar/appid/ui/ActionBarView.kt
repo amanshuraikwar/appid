@@ -13,12 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.statusBarsPadding
 import io.github.amanshuraikwar.appid.BuildConfig
 import io.github.amanshuraikwar.appid.R
+import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.ui.theme.appName
 import io.github.amanshuraikwar.appid.ui.theme.medium
 
@@ -29,7 +28,7 @@ fun ActionBarView(
     elevation: Dp = 4.dp,
     content: @Composable BoxScope.() -> Unit = {
         Text(
-            modifier = Modifier
+            modifier = Modifier//.statusBarsPadding()
                 .padding(16.dp),
             text = stringResource(id = R.string.app_name).uppercase(),
             style = MaterialTheme.typography.appName,
@@ -55,7 +54,7 @@ fun ActionBarView(
             modifier = Modifier
                 .fillMaxWidth()
                 .defaultMinSize(minHeight = 56.dp)
-                .statusBarsPadding(),
+                .acmStatusBarsPadding(),
             contentAlignment = Alignment.CenterStart
         ) {
             content()

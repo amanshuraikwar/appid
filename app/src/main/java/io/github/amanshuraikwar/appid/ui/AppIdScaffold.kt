@@ -30,10 +30,20 @@ fun AppIdScaffold(
             )
         )
         layout(constraints.maxWidth, constraints.maxHeight) {
-            actionBarPlaceable.place(IntOffset(0, 0))
-            contentPlaceable.place(IntOffset(0, actionBarPlaceable.height))
+            actionBarPlaceable.place(
+                IntOffset(0, 0),
+                zIndex = 1f
+            )
+            contentPlaceable.place(
+                IntOffset(0, actionBarPlaceable.height),
+                zIndex = 0f
+            )
             bottomBarPlaceable.place(
-                IntOffset(0, constraints.maxHeight - bottomBarPlaceable.height)
+                IntOffset(
+                    0,
+                    constraints.maxHeight - bottomBarPlaceable.height
+                ),
+                zIndex = 1f
             )
         }
     }
