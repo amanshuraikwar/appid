@@ -40,4 +40,9 @@ internal class HomeViewModel @Inject constructor(
             appIdRepository.updateInstalledAppCache()
         }
     }
+
+    fun onAboutClick() {
+        _state.value = HomeViewState.About
+    }
+
 }

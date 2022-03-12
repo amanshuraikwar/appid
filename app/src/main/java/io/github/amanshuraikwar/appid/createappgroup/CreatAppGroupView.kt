@@ -25,7 +25,7 @@ import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 
 @Composable
 fun CreateAppGroupView(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onCloseClick: () -> Unit
 ) {
     val vm: CreateAppGroupViewModel = viewModel()
@@ -87,14 +87,17 @@ private fun CreateAppGroupView(
         }
     }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colors.surface)
+            .fillMaxSize()
+    ) {
         AnimatedVisibility(
             visible = !selectApps,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
             AppGroupDetailView(
-                modifier = modifier,
                 appGroupName = appGroupName,
                 onAppGroupNameValueChange = {
                     appGroupName = it

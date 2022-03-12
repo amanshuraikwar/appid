@@ -16,16 +16,18 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
+import io.github.amanshuraikwar.appid.ui.theme.packageName
 
 @Composable
 fun AppView(
     modifier: Modifier = Modifier,
     app: App,
-    onClick: ((App) -> Unit)? = null
+    onClick: ((App) -> Unit)? = null,
+    appIconSize: Dp = 40.dp
 ) {
     Surface(
         modifier
@@ -39,24 +41,29 @@ fun AppView(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            AppIconView(
-                modifier = Modifier.size(56.dp),
-                packageName = app.packageName
-            )
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color = MaterialTheme.colors.surface,
+                elevation = 1.dp
+            ) {
+                AppIconView(
+                    modifier = Modifier.size(appIconSize),
+                    packageName = app.packageName
+                )
+            }
 
             Column(
                 Modifier.padding(start = 16.dp)
             ) {
                 Text(
                     text = app.name,
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.subtitle1,
                 )
 
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = app.packageName,
-                    style = MaterialTheme.typography.body1
+                    text = app.packageName.lowercase(),
+                    style = MaterialTheme.typography.packageName,
                 )
 
                 Text(
@@ -80,6 +87,7 @@ fun AppView(
 fun AppView(
     modifier: Modifier = Modifier,
     app: App,
+    appIconSize: Dp = 40.dp,
     onClick: (App) -> Unit,
     onDeleteClick: (App) -> Unit
 ) {
@@ -91,6 +99,6 @@ fun AppView(
         btnForegroundColor = MaterialTheme.colors.onError,
         onButtonClick = { onDeleteClick(app) }
     ) {
-        AppView(app = app, onClick = onClick)
+        AppView(app = app, onClick = onClick, appIconSize = appIconSize)
     }
 }

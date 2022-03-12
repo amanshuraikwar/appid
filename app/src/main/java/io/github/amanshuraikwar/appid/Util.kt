@@ -5,7 +5,10 @@ import android.content.res.Configuration
 import android.graphics.Color
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.max
 import androidx.core.view.WindowCompat
@@ -71,3 +74,29 @@ fun rememberImeAndNavBarInsetsPaddingValues(
 fun <T> MutableSharedFlow<T>.toSharedFlow(): SharedFlow<T> = this
 
 fun <T> MutableStateFlow<T>.toStateFlow(): StateFlow<T> = this
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun Modifier.acmStatusBarsPadding(): Modifier = composed {
+    padding(
+        rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.statusBars,
+            applyTop = true
+        )
+    )
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun Modifier.acmNavigationBarsPadding(
+    bottom: Boolean = true,
+    start: Boolean = true,
+    end: Boolean = true,
+): Modifier = composed {
+    padding(
+        rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.navigationBars,
+            applyStart = start,
+            applyEnd = end,
+            applyBottom = bottom
+        )
+    )
+}

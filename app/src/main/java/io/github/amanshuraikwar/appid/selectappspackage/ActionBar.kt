@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.SearchBar
 
@@ -76,13 +76,13 @@ internal fun ActionBar(
                 targetValue = if (inFocus) {
                     0.dp
                 } else {
-                    56.dp
+                    72.dp
                 }
             )
 
             val paddingStartInverse by animateDpAsState(
                 targetValue = if (inFocus) {
-                    56.dp
+                    72.dp
                 } else {
                     0.dp
                 }
@@ -142,7 +142,7 @@ internal fun ActionBar(
 
             IconButton(
                 modifier = Modifier
-                    .statusBarsPadding()
+                    .acmStatusBarsPadding()
                     .align(Alignment.CenterStart)
                     .padding(4.dp),
                 imageVector = Icons.Rounded.ArrowBack,
