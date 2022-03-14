@@ -1,5 +1,6 @@
 package io.github.amanshuraikwar.appid.about
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +21,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,9 +36,11 @@ import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.BuildConfig
 import io.github.amanshuraikwar.appid.R
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
-import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.ui.theme.appName
 import io.github.amanshuraikwar.appid.ui.theme.appNameLarge
+import io.github.amanshuraikwar.appid.ui.theme.aqua
+import io.github.amanshuraikwar.appid.ui.theme.aquaVariant
+import io.github.amanshuraikwar.appid.ui.theme.cementDark
 import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.medium
 import kotlin.math.roundToInt
@@ -84,6 +87,12 @@ fun AboutView(
             ) {
                 Box(
                     modifier = Modifier
+                        .background(
+                            Brush.linearGradient(
+                                0f to aqua,
+                                1f to aquaVariant
+                            )
+                        )
                         .fillMaxWidth()
                         .height(
                             this@BoxWithConstraints.maxHeight / 2
@@ -97,7 +106,7 @@ fun AboutView(
                         Text(
                             text = stringResource(id = R.string.app_name).uppercase(),
                             style = MaterialTheme.typography.appNameLarge,
-                            color = MaterialTheme.colors.onPrimary,
+                            color = cementDark,
 
                             )
 
@@ -105,7 +114,7 @@ fun AboutView(
                             modifier = Modifier.padding(top = 16.dp),
                             text = BuildConfig.VERSION_NAME,
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.colors.onPrimary.medium,
+                            color = cementDark.medium,
                             fontWeight = FontWeight.Bold
                         )
                     }
