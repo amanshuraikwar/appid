@@ -7,7 +7,6 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -17,31 +16,32 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import io.github.amanshuraikwar.appid.ui.rememberAppIdIndication
 
 private val DarkColorPalette = darkColors(
-    primary = blueLighter,
-    primaryVariant = blue,
-    secondary = blueLighter,
-    background = black,
-    surface = black,
+    primary = aqua,
+    primaryVariant = aquaVariant,
+    secondary = aqua,
+    secondaryVariant = aquaVariant,
+    background = blueGreyDark,
+    surface = blueGreyDark,
     error = redLighter,
-    onPrimary = gray900,
-    onSecondary = gray900,
-    onBackground = blueGrey50,
-    onSurface = blueGrey50,
+    onPrimary = cementDark,
+    onSecondary = cementDark,
+    onBackground = white,
+    onSurface = white,
     onError = gray900
 )
 
 private val LightColorPalette = lightColors(
-    primary = blue,
-    primaryVariant = blueDark,
-    secondary = blue,
-    secondaryVariant = blueDark,
-    background = blueGrey50,
+    primary = aquaDark,
+    primaryVariant = aquaVariant,
+    secondary = aquaDark,
+    secondaryVariant = aquaVariant,
+    background = white,
     surface = white,
     error = red,
-    onPrimary = blueGrey50,
-    onSecondary = blueGrey50,
-    onBackground = blueGreyDark,
-    onSurface = blueGreyDark,
+    onPrimary = cementDark,
+    onSecondary = cementDark,
+    onBackground = cementDark,
+    onSurface = cementDark,
     onError = blueGrey50
 )
 
