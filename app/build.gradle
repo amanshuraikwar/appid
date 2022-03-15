@@ -108,4 +108,10 @@ dependencies {
     implementation Libs.Coil.compose
 
     implementation Libs.SqlDelight.androidDriver
+
+    implementation Libs.Google.analytics
+    implementation Libs.Google.crashlytics
 }
+
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'

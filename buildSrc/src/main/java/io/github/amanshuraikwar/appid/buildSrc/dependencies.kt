@@ -136,4 +136,11 @@ object Libs {
     object Coil {
         const val compose = "io.coil-kt:coil-compose:2.0.0-alpha08"
     }
+
+    object Google {
+        const val gms = "com.google.gms:google-services:4.3.10"
+        const val crashlyticsPlugin = "com.google.firebase:firebase-crashlytics-gradle:2.8.1"
+        const val analytics = "com.google.firebase:firebase-analytics:20.0.2"
+        const val crashlytics = "com.google.firebase:firebase-crashlytics:18.2.6"
+    }
 }
