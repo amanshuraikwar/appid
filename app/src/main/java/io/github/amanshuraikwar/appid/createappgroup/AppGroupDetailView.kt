@@ -104,7 +104,7 @@ internal fun AppGroupDetailView(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .clickable { focusRequester.requestFocus() }
+//                    .clickable { focusRequester.requestFocus() }
             ) {
                 BasicTextField(
                     modifier = Modifier

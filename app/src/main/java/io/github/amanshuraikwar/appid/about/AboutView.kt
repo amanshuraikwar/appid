@@ -166,3 +166,94 @@ fun AboutView(
         }
     }
 }
+
+@Composable
+fun AboutView2(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
+) {
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        Surface(
+            color = MaterialTheme.colors.primary,
+            elevation = 2.dp
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        Brush.linearGradient(
+                            0f to aqua,
+                            1f to aquaVariant
+                        )
+                    )
+                    .fillMaxWidth()
+                    .height(
+                        this@BoxWithConstraints.maxHeight / 2
+                    ),
+            ) {
+                Column(
+                    Modifier
+                        .align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_name).uppercase(),
+                        style = MaterialTheme.typography.appNameLarge,
+                        color = cementDark,
+
+                        )
+
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = BuildConfig.VERSION_NAME,
+                        style = MaterialTheme.typography.h6,
+                        color = cementDark.medium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        Surface(
+            modifier = Modifier
+                .padding(
+                    top = this@BoxWithConstraints.maxHeight / 2
+                )
+                .fillMaxWidth()
+                .height(
+                    this@BoxWithConstraints.maxHeight / 2
+                ),
+//                .offset {
+//                    IntOffset(0, swipeableState.offset.value.roundToInt())
+//                },
+            color = MaterialTheme.colors.surface,
+            elevation = 2.dp
+        ) {
+            Column(
+                Modifier
+                    .clickable(onClick = onBackClick)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp),
+                    text = "by amanshu raikwar",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.appName,
+                    color = MaterialTheme.colors.onSurface.medium
+                )
+
+                Icon(
+                    imageVector = Icons.Rounded.ExpandLess,
+                    contentDescription = "Close",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .acmNavigationBarsPadding()
+                        .size(72.dp),
+                    tint = MaterialTheme.colors.onSurface.disabled
+                )
+            }
+        }
+    }
+}

@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import io.github.amanshuraikwar.appid.about.AboutView
+import io.github.amanshuraikwar.appid.about.AboutView2
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
 import io.github.amanshuraikwar.appid.appgroupdetail.AppGroupDetailView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
 import io.github.amanshuraikwar.appid.createappgroup.CreateAppGroupView
 import io.github.amanshuraikwar.appid.ui.ActionBarView
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
+import io.github.amanshuraikwar.appid.ui.SwipeDismissView
 
 @Composable
 fun HomeView() {
@@ -104,16 +105,13 @@ fun HomeView() {
                 )
             }
 
-            AnimatedVisibility(
+            SwipeDismissView(
                 visible = state == HomeViewState.CreateAppGroup,
-                enter = slideInVertically {
-                    it
-                },
-                exit = slideOutVertically {
-                    it
-                }
-            ) {
+                enterFromTop = false,
+                onDismiss = vm::onBackClick
+            ) { modifier ->
                 CreateAppGroupView(
+                    modifier = modifier,
                     onCloseClick = vm::onBackClick
                 )
             }
@@ -143,16 +141,14 @@ fun HomeView() {
                 }
             }
 
-            AnimatedVisibility(
+            SwipeDismissView(
                 visible = state == HomeViewState.About,
-                enter = slideInVertically {
-                    -it
-                },
-                exit = slideOutVertically {
-                    -it
-                }
-            ) {
-                AboutView(onBackClick = vm::onBackClick)
+                onDismiss = vm::onBackClick
+            ) { modifier ->
+                AboutView2(
+                    modifier,
+                    vm::onBackClick
+                )
             }
         }
     }

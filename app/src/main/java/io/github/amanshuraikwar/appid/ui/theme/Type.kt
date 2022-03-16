@@ -20,6 +20,7 @@ private val RobotoMonoFontFamily = FontFamily(
 
 private val RobotoSlabFontFamily = FontFamily(
     Font(R.font.roboto_slab_medium, FontWeight.Medium),
+    Font(R.font.roboto_slab_medium, FontWeight.Bold),
 )
 
 val AppIdTypography = Typography(
