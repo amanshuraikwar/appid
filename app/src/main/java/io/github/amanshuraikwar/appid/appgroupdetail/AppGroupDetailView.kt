@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
 import io.github.amanshuraikwar.appid.model.App
@@ -85,61 +87,63 @@ internal fun AppGroupDetailView(
     onAppDeleteClick: (AppGroup, App) -> Unit,
     onDeleteAppGroupClick: (AppGroup) -> Unit,
 ) {
-    AppIdScaffold(
-        modifier = modifier
-            .fillMaxSize(),
-        actionBar = {
-            ActionBar(
-                state = state,
-                onBackClick = onBackClick,
-                onGridViewClick = onGridViewClick,
-                onListViewClick = onListViewClick,
-                onDeleteAppGroupClick = onDeleteAppGroupClick
-            )
-        },
-        bottomBar = {
-            Column(
+    Surface(modifier, elevation = 2.dp) {
+        AppIdScaffold(
+            modifier = Modifier
+                .fillMaxSize(),
+            actionBar = {
+                ActionBar(
+                    state = state,
+                    onBackClick = onBackClick,
+                    onGridViewClick = onGridViewClick,
+                    onListViewClick = onListViewClick,
+                    onDeleteAppGroupClick = onDeleteAppGroupClick
+                )
+            },
+            bottomBar = {
+                Column(
+                    Modifier
+                        .background(MaterialTheme.colors.surface)
+                        .animateContentSize()
+                ) {
+                    if (state is AppGroupDetailState.Success) {
+                        Divider()
+
+                        BottomBarView(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .acmNavigationBarsPadding(),
+                            state = state,
+                            onDeleteClick = {
+                                onDeleteAllAppsClick(state.appGroup)
+                            }
+                        )
+                    }
+                }
+            }
+        ) {
+            Box(
                 Modifier
-                    .background(MaterialTheme.colors.surface)
-                    .animateContentSize()
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
             ) {
                 if (state is AppGroupDetailState.Success) {
-                    Divider()
-
-                    BottomBarView(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .acmNavigationBarsPadding(),
-                        state = state,
-                        onDeleteClick = {
-                            onDeleteAllAppsClick(state.appGroup)
-                        }
-                    )
+                    Column(
+                        Modifier.fillMaxSize()
+                    ) {
+                        AppsView(
+                            state = state,
+                            onAppDeleteClick = onAppDeleteClick
+                        )
+                    }
                 }
-            }
-        }
-    ) {
-        Box(
-            Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            if (state is AppGroupDetailState.Success) {
-                Column(
-                    Modifier.fillMaxSize()
-                ) {
-                    AppsView(
-                        state = state,
-                        onAppDeleteClick = onAppDeleteClick
-                    )
-                }
-            }
 
-            ErrorView(
-                modifier = Modifier,
-                error = error,
-                enterFromBottom = true
-            )
+                ErrorView(
+                    modifier = Modifier,
+                    error = error,
+                    enterFromBottom = true
+                )
+            }
         }
     }
 }

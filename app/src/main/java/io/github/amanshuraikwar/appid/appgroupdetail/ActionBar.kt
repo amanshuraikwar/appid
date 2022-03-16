@@ -33,12 +33,12 @@ fun ActionBar(
 ) {
     CompositionLocalProvider(
         LocalIndication provides rememberAppIdIndication(
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colors.primary
         )
     ) {
         ActionBarView(
             elevation = 0.dp,
-            surfaceColor = MaterialTheme.colors.primary
+            surfaceColor = MaterialTheme.colors.onPrimary
         ) {
             Column {
                 Box(
@@ -50,7 +50,7 @@ fun ActionBar(
                         imageVector = Icons.Rounded.ArrowBack,
                         contentDescription = "Back",
                         onClick = onBackClick,
-                        foregroundColor = MaterialTheme.colors.onPrimary
+                        foregroundColor = MaterialTheme.colors.primary
                     )
 
                     if (state is AppGroupDetailState.Success) {
@@ -68,7 +68,7 @@ fun ActionBar(
                                 }
                             },
                             contentDescription = "Grid View",
-                            foregroundColor = MaterialTheme.colors.onPrimary,
+                            foregroundColor = MaterialTheme.colors.primary,
                             onClick = when (state.appDisplayType) {
                                 AppGroupDetailState.AppDisplayType.GRID -> onListViewClick
                                 AppGroupDetailState.AppDisplayType.LIST -> onGridViewClick
@@ -84,7 +84,7 @@ fun ActionBar(
                             onClick = {
                                 onDeleteAppGroupClick(state.appGroup)
                             },
-                            foregroundColor = MaterialTheme.colors.onPrimary
+                            foregroundColor = MaterialTheme.colors.primary
                         )
                     }
                 }
@@ -103,7 +103,7 @@ fun ActionBar(
                         is AppGroupDetailState.Success -> state.appGroup.name
                     },
                     style = MaterialTheme.typography.h5,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.primary,
                     fontWeight = FontWeight.Bold
                 )
             }

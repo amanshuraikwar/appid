@@ -7,7 +7,7 @@ object Libs {
     const val minSdk = 23
     const val targetSdk = 32
 
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha06"
 
     object Kotlin {
         const val version = "1.6.10"
