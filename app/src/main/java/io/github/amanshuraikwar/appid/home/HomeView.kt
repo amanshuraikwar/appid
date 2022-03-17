@@ -1,9 +1,11 @@
+@file:OptIn(ExperimentalAnimationApi::class)
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package io.github.amanshuraikwar.appid.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,8 +21,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -109,47 +115,89 @@ fun HomeView() {
                 visible = state == HomeViewState.CreateAppGroup,
                 enterFromTop = false,
                 onDismiss = vm::onBackClick
-            ) { modifier ->
+            ) { modifier, _ ->
                 CreateAppGroupView(
                     modifier = modifier,
                     onCloseClick = vm::onBackClick
                 )
             }
 
-            AnimatedVisibility(
-                visible = state is HomeViewState.AppGroupDetail,
-                enter = slideInVertically {
-                    it
-                },
-                exit = slideOutVertically {
-                    it
-                }
-            ) {
-                if (state is HomeViewState.AppGroupDetail) {
-                    AppGroupDetailView(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colors.background),
-                        id = (state as HomeViewState.AppGroupDetail).id,
-                        onBackClick = {
-                            vm.onReturnedFromAppDetails(
-                                appGroupId = (state as HomeViewState.AppGroupDetail).id
-                            )
-                            vm.onBackClick()
-                        },
-                    )
-                }
-            }
-
             SwipeDismissView(
-                visible = state == HomeViewState.About,
-                onDismiss = vm::onBackClick
-            ) { modifier ->
-                AboutView2(
-                    modifier,
-                    vm::onBackClick
+                visible = state is HomeViewState.AppGroupDetail,
+                enterFromTop = false,
+                onDismiss = vm::onBackClick,
+            ) { modifier, animatedVisibilityScope ->
+                var id: String? by remember {
+                    mutableStateOf(null)
+                }
+
+                LaunchedEffect(key1 = animatedVisibilityScope.transition.currentState) {
+                    if (
+                        animatedVisibilityScope.transition.currentState == EnterExitState.Visible
+                    ) {
+                        id = (state as? HomeViewState.AppGroupDetail)?.id
+                    }
+                    if (
+                        animatedVisibilityScope.transition.currentState == EnterExitState.PostExit
+                    ) {
+                        id = null
+                    }
+                }
+
+                AppGroupDetailView(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.background),
+                    id = id,
+                    onBackClick = {
+                        vm.onReturnedFromAppDetails(
+                            appGroupId = (state as HomeViewState.AppGroupDetail).id
+                        )
+                        vm.onBackClick()
+                    },
                 )
             }
+//            AnimatedVisibility(
+//                visible = state is HomeViewState.AppGroupDetail,
+//                enter = slideInVertically {
+//                    it
+//                },
+//                exit = slideOutVertically {
+//                    it
+//                }
+//            ) {
+//                LaunchedEffect(key1 = transition.currentState) {
+//                    if (transition.currentState == EnterExitState.Visible) {
+//                        id = (state as? HomeViewState.AppGroupDetail)?.id
+//                    }
+//                    if (transition.currentState == EnterExitState.PostExit) {
+//                        id = null
+//                    }
+//                }
+//
+//                AppGroupDetailView(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(MaterialTheme.colors.background),
+//                    id = id,
+//                    onBackClick = {
+//                        vm.onReturnedFromAppDetails(
+//                            appGroupId = (state as HomeViewState.AppGroupDetail).id
+//                        )
+//                        vm.onBackClick()
+//                    },
+//                )
+//            }
+        }
+
+        SwipeDismissView(
+            visible = state == HomeViewState.About,
+            onDismiss = vm::onBackClick
+        ) { modifier, _ ->
+            AboutView2(
+                modifier,
+                vm::onBackClick
+            )
         }
     }
 }

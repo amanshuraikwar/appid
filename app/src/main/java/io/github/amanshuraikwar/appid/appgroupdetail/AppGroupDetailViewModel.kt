@@ -37,8 +37,13 @@ internal class AppGroupDetailViewModel @Inject constructor(
     private val _error = getUiErrorFlow()
     val error = _error.toSharedFlow()
 
-    fun init(id: String) {
+    fun init(id: String?) {
         viewModelScope.launch(dispatcherProvider.computation) {
+            if (id == null) {
+                _state.value = AppGroupDetailState.Loading
+                return@launch
+            }
+
             val appGroup = appIdRepository.getAppGroup(id = id)
             if (appGroup == null) {
                 _state.value = AppGroupDetailState.AppGroupNotFound(
