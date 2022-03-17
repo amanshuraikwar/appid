@@ -1,6 +1,10 @@
 package io.github.amanshuraikwar.appid.appgroupdetail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
@@ -22,6 +27,7 @@ import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.ui.AppIdScaffold
 import io.github.amanshuraikwar.appid.ui.ErrorView
+import io.github.amanshuraikwar.appid.ui.ProgressView
 import io.github.amanshuraikwar.appid.ui.UiError
 import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 import io.github.amanshuraikwar.appid.util.rememberAppUninstaller
@@ -29,7 +35,7 @@ import io.github.amanshuraikwar.appid.util.rememberAppUninstaller
 @Composable
 fun AppGroupDetailView(
     modifier: Modifier = Modifier,
-    id: String,
+    id: String?,
     onBackClick: () -> Unit
 ) {
     val vm: AppGroupDetailViewModel = viewModel()
@@ -88,61 +94,77 @@ internal fun AppGroupDetailView(
     onDeleteAppGroupClick: (AppGroup) -> Unit,
 ) {
     Surface(modifier, elevation = 2.dp) {
-        AppIdScaffold(
-            modifier = Modifier
-                .fillMaxSize(),
-            actionBar = {
-                ActionBar(
-                    state = state,
-                    onBackClick = onBackClick,
-                    onGridViewClick = onGridViewClick,
-                    onListViewClick = onListViewClick,
-                    onDeleteAppGroupClick = onDeleteAppGroupClick
-                )
-            },
-            bottomBar = {
-                Column(
+        if (state is AppGroupDetailState.Loading) {
+            Box(
+                modifier = modifier
+                    .background(MaterialTheme.colors.onPrimary)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressView()
+            }
+        }
+
+        AnimatedVisibility(
+            visible = state !is AppGroupDetailState.Loading,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            AppIdScaffold(
+                modifier = Modifier
+                    .fillMaxSize(),
+                actionBar = {
+                    ActionBar(
+                        state = state,
+                        onBackClick = onBackClick,
+                        onGridViewClick = onGridViewClick,
+                        onListViewClick = onListViewClick,
+                        onDeleteAppGroupClick = onDeleteAppGroupClick
+                    )
+                },
+                bottomBar = {
+                    Column(
+                        Modifier
+                            .animateContentSize()
+                    ) {
+                        if (state is AppGroupDetailState.Success) {
+                            Divider()
+
+                            BottomBarView(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .acmNavigationBarsPadding(),
+                                state = state,
+                                onDeleteClick = {
+                                    onDeleteAllAppsClick(state.appGroup)
+                                }
+                            )
+                        }
+                    }
+                }
+            ) {
+                Box(
                     Modifier
-                        .background(MaterialTheme.colors.surface)
-                        .animateContentSize()
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
                     if (state is AppGroupDetailState.Success) {
-                        Divider()
-
-                        BottomBarView(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .acmNavigationBarsPadding(),
-                            state = state,
-                            onDeleteClick = {
-                                onDeleteAllAppsClick(state.appGroup)
-                            }
-                        )
+                        Column(
+                            Modifier.fillMaxSize()
+                        ) {
+                            AppsView(
+                                state = state,
+                                onAppDeleteClick = onAppDeleteClick
+                            )
+                        }
                     }
-                }
-            }
-        ) {
-            Box(
-                Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                if (state is AppGroupDetailState.Success) {
-                    Column(
-                        Modifier.fillMaxSize()
-                    ) {
-                        AppsView(
-                            state = state,
-                            onAppDeleteClick = onAppDeleteClick
-                        )
-                    }
-                }
 
-                ErrorView(
-                    modifier = Modifier,
-                    error = error,
-                    enterFromBottom = true
-                )
+                    ErrorView(
+                        modifier = Modifier,
+                        error = error,
+                        enterFromBottom = true
+                    )
+                }
             }
         }
     }
