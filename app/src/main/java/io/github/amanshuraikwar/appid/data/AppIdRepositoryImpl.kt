@@ -82,6 +82,7 @@ class AppIdRepositoryImpl(
                 .map { (_, app) ->
                     app
                 }
+                .sorted()
         }
     }
 

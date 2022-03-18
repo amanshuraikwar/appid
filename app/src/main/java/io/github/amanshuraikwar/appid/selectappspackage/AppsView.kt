@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import io.github.amanshuraikwar.appid.ui.AppView
 import io.github.amanshuraikwar.appid.ui.EmptyStateView
 import io.github.amanshuraikwar.appid.ui.theme.medium
 
@@ -26,6 +25,7 @@ import io.github.amanshuraikwar.appid.ui.theme.medium
 internal fun AppsView(
     modifier: Modifier = Modifier,
     state: SelectAppsPackageState,
+    onAppClick: (app: SelectableApp) -> Unit,
 ) {
     Column(
         modifier
@@ -40,12 +40,16 @@ internal fun AppsView(
                         items(
                             items = state.apps,
                             key = { app ->
-                                app.packageName
+                                app.app.packageName
                             },
                         ) { item ->
-                            AppView(
-                                modifier = Modifier.animateItemPlacement(),
-                                app = item
+                            SelectableAppView(
+                                modifier = Modifier
+                                    .animateItemPlacement(),
+                                selectableApp = item,
+                                onClick = {
+                                    onAppClick(item)
+                                }
                             )
                         }
                     }

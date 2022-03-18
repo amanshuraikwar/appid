@@ -64,7 +64,7 @@ object Libs {
         }
 
         object Compose {
-            const val version = "1.2.0-alpha01"
+            const val version = "1.2.0-alpha05"
             const val ui = "androidx.compose.ui:ui:$version"
             const val uiTooling = "androidx.compose.ui:ui-tooling:$version"
             const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"

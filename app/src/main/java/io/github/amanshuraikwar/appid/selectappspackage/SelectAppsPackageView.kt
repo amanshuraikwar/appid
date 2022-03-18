@@ -40,7 +40,7 @@ fun SelectAppsPackageView(
 
     val selectApps by vm.selectAppsFlow.collectAsState()
     DisposableEffect(selectApps) {
-        selectApps?.apps?.let(onSelected)
+        selectApps?.let(onSelected)
         onDispose(vm::onDispose)
     }
 
@@ -50,7 +50,10 @@ fun SelectAppsPackageView(
         error = error,
         onBackClick = onBackClick,
         onSearch = vm::onSearch,
-        onSelectClick = vm::onSelectClick
+        onSelectClick = vm::onSelectClick,
+        onAppClick = vm::onAppClick,
+        onSelectAllClick = vm::onSelectAllClick,
+        onDeselectAllClick = vm::onDeselectAllClick,
     )
 }
 
@@ -62,13 +65,19 @@ internal fun SelectAppsPackageView(
     onBackClick: () -> Unit,
     onSearch: (query: String) -> Unit,
     onSelectClick: () -> Unit,
+    onAppClick: (SelectableApp) -> Unit,
+    onSelectAllClick: () -> Unit,
+    onDeselectAllClick: () -> Unit,
 ) {
     AppIdScaffold(
         modifier = modifier,
         actionBar = {
             ActionBar(
+                state = state,
                 onBackClick = onBackClick,
-                onSearch = onSearch
+                onSearch = onSearch,
+                onSelectAllClick = onSelectAllClick,
+                onDeselectAllClick = onDeselectAllClick,
             )
         },
         bottomBar = {
@@ -93,6 +102,7 @@ internal fun SelectAppsPackageView(
                     .clickable(enabled = false) { }
                     .fillMaxSize(),
                 state = state,
+                onAppClick = onAppClick
             )
 
             ErrorView(

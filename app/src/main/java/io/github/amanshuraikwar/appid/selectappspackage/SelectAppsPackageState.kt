@@ -1,5 +1,7 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import io.github.amanshuraikwar.appid.model.App
 
 internal sealed class SelectAppsPackageState {
@@ -10,7 +12,13 @@ internal sealed class SelectAppsPackageState {
     ) : SelectAppsPackageState()
 
     data class Success(
+        var selectedAppCount: MutableState<Int>,
         val packageName: String,
-        val apps: List<App>
+        val apps: SnapshotStateList<SelectableApp>
     ) : SelectAppsPackageState()
 }
+
+internal data class SelectableApp(
+    val selected: Boolean,
+    val app: App
+)
