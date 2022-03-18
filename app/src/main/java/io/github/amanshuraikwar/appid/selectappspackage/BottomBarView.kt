@@ -44,7 +44,7 @@ internal fun BottomBarView(
                         .padding(
                             top = 8.dp
                         ),
-                    text = "${state.apps.size} APPS",
+                    text = "${state.selectedAppCount.value} APPS SELECTED",
                     style = MaterialTheme.typography.body2,
                     color = MaterialTheme.colors.onSurface.medium
                 )
