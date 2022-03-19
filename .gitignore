@@ -15,4 +15,5 @@
 local.properties
 /.idea
 /.idea/*
-app/release/
+app/release/app/google-services.json
+**/build/
