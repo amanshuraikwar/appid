@@ -225,4 +225,26 @@ class AppIdRepositoryImpl(
             }
         }
     }
+
+    override suspend fun removeAppFromGroup(
+        appGroupId: String,
+        appPackageName: String
+    ): Boolean {
+        return withContext(dispatcherProvider.io) {
+            suspendCancellableCoroutine { cont ->
+                appIdDb.transaction {
+                    appIdDb.appGroupAppListEntityQueries.deleteByGroupIdAndAppPackageName(
+                        groupId = appGroupId.toLong(),
+                        packageName = appPackageName
+                    )
+                    afterCommit {
+                        cont.resumeWith(Result.success(true))
+                    }
+                    afterRollback {
+                        cont.resumeWith(Result.success(false))
+                    }
+                }
+            }
+        }
+    }
 }

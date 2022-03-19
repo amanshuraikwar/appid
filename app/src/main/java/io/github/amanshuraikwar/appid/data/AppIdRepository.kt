@@ -16,4 +16,5 @@ interface AppIdRepository {
     suspend fun deleteApp(packageName: String)
     suspend fun appWasUninstalled(packageName: String)
     suspend fun updateInstalledAppCache()
+    suspend fun removeAppFromGroup(appGroupId: String, appPackageName: String): Boolean
 }

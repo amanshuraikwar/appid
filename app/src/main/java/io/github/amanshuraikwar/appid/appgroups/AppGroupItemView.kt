@@ -5,17 +5,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.twotone.RemoveCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.AppGroup
 import io.github.amanshuraikwar.appid.ui.AppGroupView
-import io.github.amanshuraikwar.appid.ui.SwipeableButtonView
+import io.github.amanshuraikwar.appid.ui.swipe.SwipeAction
+import io.github.amanshuraikwar.appid.ui.swipe.SwipeableActionsBox
+import io.github.amanshuraikwar.appid.ui.theme.onRemove
+import io.github.amanshuraikwar.appid.ui.theme.remove
 import java.util.*
 
 @Composable
@@ -25,13 +29,24 @@ internal fun AppGroupItemView(
     onClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
 ) {
-    SwipeableButtonView(
+    val delete = SwipeAction(
+        icon = {
+            Icon(
+                modifier = Modifier.padding(16.dp),
+                imageVector = Icons.TwoTone.RemoveCircle,
+                tint = MaterialTheme.colors.onRemove,
+                contentDescription = "Remove"
+            )
+        },
+        background = MaterialTheme.colors.remove,
+        onSwipe = { onDeleteClick(appGroup.id) },
+        isUndo = false,
+    )
+
+    SwipeableActionsBox(
         modifier = modifier,
-        btnIcon = Icons.Rounded.Delete,
-        btnContentDescription = "Delete",
-        btnBackgroundColor = MaterialTheme.colors.error,
-        btnForegroundColor = MaterialTheme.colors.onError,
-        onButtonClick = { onDeleteClick(appGroup.id) }
+        endActions = listOf(delete),
+        backgroundUntilSwipeThreshold = MaterialTheme.colors.onPrimary
     ) {
         Surface(
             color = MaterialTheme.colors.surface,

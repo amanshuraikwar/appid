@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
@@ -71,7 +69,13 @@ fun AppGroupDetailView(
         onGridViewClick = vm::onGridViewClick,
         onListViewClick = vm::onListViewClick,
         onAppDeleteClick = { appGroup, app ->
-            vm.onDeleteClick(
+            vm.onAppDeleteClick(
+                appGroup = appGroup,
+                app = app,
+            )
+        },
+        onAppUninstallClick = { appGroup, app ->
+            vm.onAppUninstallClick(
                 appGroup = appGroup,
                 app = app,
                 appUninstaller = appUninstaller
@@ -91,6 +95,7 @@ internal fun AppGroupDetailView(
     onGridViewClick: () -> Unit,
     onListViewClick: () -> Unit,
     onAppDeleteClick: (AppGroup, App) -> Unit,
+    onAppUninstallClick: (AppGroup, App) -> Unit,
     onDeleteAppGroupClick: (AppGroup) -> Unit,
 ) {
     Surface(modifier, elevation = 2.dp) {
@@ -154,7 +159,8 @@ internal fun AppGroupDetailView(
                         ) {
                             AppsView(
                                 state = state,
-                                onAppDeleteClick = onAppDeleteClick
+                                onAppDeleteClick = onAppDeleteClick,
+                                onAppUninstallClick = onAppUninstallClick,
                             )
                         }
                     }

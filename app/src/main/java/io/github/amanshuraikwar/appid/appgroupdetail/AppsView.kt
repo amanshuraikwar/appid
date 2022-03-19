@@ -1,5 +1,6 @@
 package io.github.amanshuraikwar.appid.appgroupdetail
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,11 +14,14 @@ import io.github.amanshuraikwar.appid.ui.AppGroupView
 import io.github.amanshuraikwar.appid.ui.AppView
 import io.github.amanshuraikwar.appid.util.rememberAppLauncher
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun AppsView(
     modifier: Modifier = Modifier,
     state: AppGroupDetailState.Success,
     onAppDeleteClick: (AppGroup, App) -> Unit,
+    onAppUninstallClick: (AppGroup, App) -> Unit,
 ) {
     val appLauncher = rememberAppLauncher()
 
@@ -43,11 +47,16 @@ internal fun AppsView(
                     key = { it.packageName }
                 ) { item ->
                     AppView(
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         app = item,
                         onClick = appLauncher::launch,
                         appIconSize = 40.dp,
                         onDeleteClick = {
                             onAppDeleteClick(state.appGroup, it)
+                        },
+                        onUninstallClick = {
+                            onAppUninstallClick(state.appGroup, it)
                         }
                     )
                 }

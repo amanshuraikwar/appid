@@ -17,6 +17,9 @@ DELETE FROM AppGroupAppListEntity WHERE id = :id;
 deleteAllByGroupId:
 DELETE FROM AppGroupAppListEntity WHERE groupId = :groupId;
 
+deleteByGroupIdAndAppPackageName:
+DELETE FROM AppGroupAppListEntity WHERE groupId = :groupId AND packageName = :packageName;
+
 findAll:
 SELECT * FROM AppGroupAppListEntity;
 

@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material.icons.twotone.RemoveCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,7 +22,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.model.App
+import io.github.amanshuraikwar.appid.ui.swipe.SwipeAction
+import io.github.amanshuraikwar.appid.ui.swipe.SwipeableActionsBox
+import io.github.amanshuraikwar.appid.ui.theme.onRemove
 import io.github.amanshuraikwar.appid.ui.theme.packageName
+import io.github.amanshuraikwar.appid.ui.theme.remove
 
 @Composable
 fun AppView(
@@ -89,15 +95,41 @@ fun AppView(
     app: App,
     appIconSize: Dp = 40.dp,
     onClick: (App) -> Unit,
-    onDeleteClick: (App) -> Unit
+    onDeleteClick: (App) -> Unit,
+    onUninstallClick: (App) -> Unit,
 ) {
-    SwipeableButtonView(
+    val delete = SwipeAction(
+        icon = {
+            Icon(
+                modifier = Modifier.padding(16.dp),
+                imageVector = Icons.TwoTone.RemoveCircle,
+                tint = MaterialTheme.colors.onRemove,
+                contentDescription = "Remove"
+            )
+        },
+        background = MaterialTheme.colors.remove,
+        onSwipe = { onDeleteClick(app) },
+        isUndo = false,
+    )
+
+    val uninstall = SwipeAction(
+        icon = {
+            Icon(
+                modifier = Modifier.padding(16.dp),
+                imageVector = Icons.TwoTone.Delete,
+                tint = MaterialTheme.colors.onError,
+                contentDescription = "Delete"
+            )
+        },
+        background = MaterialTheme.colors.error,
+        onSwipe = { onUninstallClick(app) },
+        isUndo = false,
+    )
+
+    SwipeableActionsBox(
         modifier = modifier,
-        btnIcon = Icons.Rounded.Delete,
-        btnContentDescription = "Uninstall App",
-        btnBackgroundColor = MaterialTheme.colors.error,
-        btnForegroundColor = MaterialTheme.colors.onError,
-        onButtonClick = { onDeleteClick(app) }
+        endActions = listOf(delete, uninstall),
+        backgroundUntilSwipeThreshold = MaterialTheme.colors.onPrimary
     ) {
         AppView(app = app, onClick = onClick, appIconSize = appIconSize)
     }
