@@ -16,7 +16,19 @@ sqldelight {
     }
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
+    signingConfigs {
+        release {
+            storeFile file(localProperties['keystore.file.path'])
+            storePassword localProperties['keystore.password']
+            keyAlias localProperties['keystore.key.alias']
+            keyPassword localProperties['keystore.key.password']
+        }
+    }
+
     compileSdk Libs.compileSdk
 
     defaultConfig {
@@ -24,19 +36,26 @@ android {
         minSdk Libs.minSdk
         targetSdk Libs.targetSdk
 
-        versionCode 1
-        versionName "1.0"
+        versionCode 6
+        versionName "0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+        }
+        debug {
+            minifyEnabled false
+            applicationIdSuffix ".debug"
+            debuggable true
         }
     }
 
@@ -89,9 +108,10 @@ dependencies {
     implementation Libs.Coil.compose
 
     implementation Libs.SqlDelight.androidDriver
+
+    implementation Libs.Google.analytics
+    implementation Libs.Google.crashlytics
 }
 
-task copyRuntimeLibs(type: Copy) {
-    into "lib"
-    from configurations.getByName("debugImplementation")
-}
+//apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.firebase.crashlytics'

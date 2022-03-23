@@ -1,4 +1,4 @@
-package io.github.amanshuraikwar.appid.appgroupdetail
+package io.github.amanshuraikwar.appid.ui
 
 import android.graphics.Matrix
 import android.graphics.Path

@@ -16,7 +16,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.twotone.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,11 +67,11 @@ fun ErrorView(
     ) {
         Surface(
             modifier = Modifier
-                .padding(4.dp)
+//                .padding(4.dp)
                 .fillMaxWidth(),
-            elevation = 1.dp,
-            color = MaterialTheme.colors.error,
-            shape = MaterialTheme.shapes.small
+//            elevation = 1.dp,
+            color = MaterialTheme.colors.onError,
+//            shape = MaterialTheme.shapes.small
         ) {
             Row(
                 Modifier
@@ -82,9 +82,9 @@ fun ErrorView(
                         .align(Alignment.CenterVertically)
                         .padding(16.dp)
                         .size(24.dp),
-                    imageVector = Icons.Rounded.Error,
+                    imageVector = Icons.TwoTone.Error,
                     contentDescription = "Error",
-                    tint = MaterialTheme.colors.onError
+                    tint = MaterialTheme.colors.error
                 )
 
                 Text(
@@ -93,7 +93,8 @@ fun ErrorView(
                         .padding(vertical = 16.dp)
                         .padding(end = 16.dp),
                     text = message,
-                    color = MaterialTheme.colors.onError
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2
                 )
             }
         }

@@ -7,7 +7,7 @@ object Libs {
     const val minSdk = 23
     const val targetSdk = 32
 
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.0-alpha07"
 
     object Kotlin {
         const val version = "1.6.10"
@@ -64,7 +64,7 @@ object Libs {
         }
 
         object Compose {
-            const val version = "1.2.0-alpha01"
+            const val version = "1.2.0-alpha05"
             const val ui = "androidx.compose.ui:ui:$version"
             const val uiTooling = "androidx.compose.ui:ui-tooling:$version"
             const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
@@ -108,7 +108,7 @@ object Libs {
     }
 
     object Accompanist {
-        const val insets = "com.google.accompanist:accompanist-insets:0.24.2-alpha"
+        const val insets = "com.google.accompanist:accompanist-insets:0.24.3-alpha"
     }
 
     object SqlDelight {
@@ -135,5 +135,12 @@ object Libs {
 
     object Coil {
         const val compose = "io.coil-kt:coil-compose:2.0.0-alpha08"
+    }
+
+    object Google {
+        const val gms = "com.google.gms:google-services:4.3.10"
+        const val crashlyticsPlugin = "com.google.firebase:firebase-crashlytics-gradle:2.8.1"
+        const val analytics = "com.google.firebase:firebase-analytics:20.0.2"
+        const val crashlytics = "com.google.firebase:firebase-crashlytics:18.2.6"
     }
 }

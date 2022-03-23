@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.selectappspackage.SelectAppsPackageView
@@ -25,7 +27,7 @@ import io.github.amanshuraikwar.appid.ui.collectAsUiErrorState
 
 @Composable
 fun CreateAppGroupView(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onCloseClick: () -> Unit
 ) {
     val vm: CreateAppGroupViewModel = viewModel()
@@ -87,39 +89,44 @@ private fun CreateAppGroupView(
         }
     }
 
-    Box(modifier = modifier) {
-        AnimatedVisibility(
-            visible = !selectApps,
-            enter = fadeIn(),
-            exit = fadeOut()
+    Surface(modifier, elevation = 2.dp) {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colors.surface)
+                .fillMaxSize()
         ) {
-            AppGroupDetailView(
-                modifier = modifier,
-                appGroupName = appGroupName,
-                onAppGroupNameValueChange = {
-                    appGroupName = it
-                },
-                appList = appList,
-                error = error,
-                onCloseClick = onCloseClick,
-                onCreateAppGroupClick = onCreateAppGroupClick,
-                onSelectAppsClick = onSelectAppsClick,
-                onClearAppsClick = onClearAppsClick,
-            )
-        }
+            AnimatedVisibility(
+                visible = !selectApps,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                AppGroupDetailView(
+                    appGroupName = appGroupName,
+                    onAppGroupNameValueChange = {
+                        appGroupName = it
+                    },
+                    appList = appList,
+                    error = error,
+                    onCloseClick = onCloseClick,
+                    onCreateAppGroupClick = onCreateAppGroupClick,
+                    onSelectAppsClick = onSelectAppsClick,
+                    onClearAppsClick = onClearAppsClick,
+                )
+            }
 
-        AnimatedVisibility(
-            visible = selectApps,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            SelectAppsPackageView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.background),
-                onBackClick = onAppsSelectedBackClick,
-                onSelected = onAppsSelected
-            )
+            AnimatedVisibility(
+                visible = selectApps,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                SelectAppsPackageView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colors.background),
+                    onBackClick = onAppsSelectedBackClick,
+                    onSelected = onAppsSelected
+                )
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +15,9 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.Deselect
+import androidx.compose.material.icons.twotone.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,17 +28,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.statusBarsPadding
+import io.github.amanshuraikwar.appid.acmStatusBarsPadding
 import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.SearchBar
 
 @Composable
 internal fun ActionBar(
+    state: SelectAppsPackageState,
     onBackClick: () -> Unit,
     onSearch: (query: String) -> Unit,
+    onSelectAllClick: () -> Unit,
+    onDeselectAllClick: () -> Unit,
 ) {
     Column(
-        Modifier.background(MaterialTheme.colors.surface)
+        Modifier
+            .animateContentSize()
     ) {
         Box(
             contentAlignment = Alignment.CenterStart
@@ -76,13 +85,13 @@ internal fun ActionBar(
                 targetValue = if (inFocus) {
                     0.dp
                 } else {
-                    56.dp
+                    72.dp
                 }
             )
 
             val paddingStartInverse by animateDpAsState(
                 targetValue = if (inFocus) {
-                    56.dp
+                    72.dp
                 } else {
                     0.dp
                 }
@@ -92,13 +101,21 @@ internal fun ActionBar(
                 targetValue = if (inFocus) {
                     0.dp
                 } else {
-                    16.dp
+                    if (state is SelectAppsPackageState.Success) {
+                        72.dp
+                    } else {
+                        16.dp
+                    }
                 }
             )
 
             val paddingEndInverse by animateDpAsState(
                 targetValue = if (inFocus) {
-                    16.dp
+                    if (state is SelectAppsPackageState.Success) {
+                        72.dp
+                    } else {
+                        16.dp
+                    }
                 } else {
                     0.dp
                 }
@@ -142,15 +159,51 @@ internal fun ActionBar(
 
             IconButton(
                 modifier = Modifier
-                    .statusBarsPadding()
+                    .acmStatusBarsPadding()
                     .align(Alignment.CenterStart)
                     .padding(4.dp),
-                imageVector = Icons.Rounded.ArrowBack,
+                imageVector = Icons.TwoTone.ArrowBack,
                 contentDescription = "Back",
                 onClick = onBackClick
             )
-        }
 
+            if (state is SelectAppsPackageState.Success) {
+                this@Column.AnimatedVisibility(
+                    modifier = Modifier
+                        .acmStatusBarsPadding()
+                        .align(Alignment.CenterEnd),
+                    visible = state.apps.size != state.selectedAppCount.value,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(4.dp),
+                        imageVector = Icons.TwoTone.SelectAll,
+                        contentDescription = "Select All",
+                        onClick = onSelectAllClick
+                    )
+                }
+
+                this@Column.AnimatedVisibility(
+                    modifier = Modifier
+                        .acmStatusBarsPadding()
+                        .align(Alignment.CenterEnd),
+                    visible = state.apps.size == state.selectedAppCount.value,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    IconButton(
+                        modifier = Modifier
+                            .padding(4.dp),
+                        imageVector = Icons.TwoTone.Deselect,
+                        contentDescription = "Deselect All",
+                        onClick = onDeselectAllClick
+                    )
+                }
+            }
+        }
+        
         Divider()
     }
 }

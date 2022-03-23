@@ -37,8 +37,13 @@ internal class AppGroupDetailViewModel @Inject constructor(
     private val _error = getUiErrorFlow()
     val error = _error.toSharedFlow()
 
-    fun init(id: String) {
+    fun init(id: String?) {
         viewModelScope.launch(dispatcherProvider.computation) {
+            if (id == null) {
+                _state.value = AppGroupDetailState.Loading
+                return@launch
+            }
+
             val appGroup = appIdRepository.getAppGroup(id = id)
             if (appGroup == null) {
                 _state.value = AppGroupDetailState.AppGroupNotFound(
@@ -47,7 +52,7 @@ internal class AppGroupDetailViewModel @Inject constructor(
             } else {
                 _state.value = AppGroupDetailState.Success.Idle(
                     appGroup = appGroup,
-                    appDisplayType = AppGroupDetailState.AppDisplayType.GRID
+                    appDisplayType = AppGroupDetailState.AppDisplayType.LIST
                 )
             }
         }
@@ -108,7 +113,7 @@ internal class AppGroupDetailViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteClick(appGroup: AppGroup, app: App, appUninstaller: AppUninstaller) {
+    fun onAppUninstallClick(appGroup: AppGroup, app: App, appUninstaller: AppUninstaller) {
         viewModelScope.launch(dispatcherProvider.computation) {
             val appDisplayType = withContext(dispatcherProvider.main) {
                 (_state.value as? AppGroupDetailState.Success)?.appDisplayType
@@ -135,6 +140,47 @@ internal class AppGroupDetailViewModel @Inject constructor(
                         }
                     )
                     appIdRepository.appWasUninstalled(app.packageName)
+                }
+            }
+
+            withContext(dispatcherProvider.main) {
+                _state.value = AppGroupDetailState.Success.Idle(
+                    appGroup = modifiedAppGroup,
+                    appDisplayType = appDisplayType,
+                )
+            }
+
+            if (modifiedAppGroup.apps.isEmpty()) {
+                _backClick.emit(true)
+            }
+        }
+    }
+
+    fun onAppDeleteClick(appGroup: AppGroup, app: App) {
+        viewModelScope.launch(dispatcherProvider.computation) {
+            val appDisplayType = withContext(dispatcherProvider.main) {
+                (_state.value as? AppGroupDetailState.Success)?.appDisplayType
+            } ?: return@launch
+
+            var modifiedAppGroup = appGroup
+
+            val removed = appIdRepository.removeAppFromGroup(
+                appGroupId = appGroup.id,
+                appPackageName = app.packageName
+            )
+
+            if (removed) {
+                modifiedAppGroup = modifiedAppGroup.copy(
+                    apps = modifiedAppGroup.apps.filter {
+                        it.packageName != app.packageName
+                    }
+                )
+                // TODO-amanshuraikwar (19 Mar 2022 08:26:38 PM):
+                //  update the event to delete from uninstall
+                appIdRepository.appWasUninstalled(app.packageName)
+            } else {
+                withContext(dispatcherProvider.main) {
+                    _error.tryEmitError("Could not uninstall ${app.name}!")
                 }
             }
 

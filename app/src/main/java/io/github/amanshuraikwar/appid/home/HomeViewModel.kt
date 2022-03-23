@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "HomeViewModel"
-
 @HiltViewModel
 internal class HomeViewModel @Inject constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider,
@@ -35,9 +33,15 @@ internal class HomeViewModel @Inject constructor(
         )
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onReturnedFromAppDetails(appGroupId: String) {
         viewModelScope.launch(dispatcherProvider.computation) {
             appIdRepository.updateInstalledAppCache()
         }
     }
+
+    fun onAboutClick() {
+        _state.value = HomeViewState.About
+    }
+
 }

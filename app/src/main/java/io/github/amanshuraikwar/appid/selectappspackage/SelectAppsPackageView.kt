@@ -1,6 +1,7 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -10,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.amanshuraikwar.appid.model.App
@@ -38,7 +40,7 @@ fun SelectAppsPackageView(
 
     val selectApps by vm.selectAppsFlow.collectAsState()
     DisposableEffect(selectApps) {
-        selectApps?.apps?.let(onSelected)
+        selectApps?.let(onSelected)
         onDispose(vm::onDispose)
     }
 
@@ -48,7 +50,10 @@ fun SelectAppsPackageView(
         error = error,
         onBackClick = onBackClick,
         onSearch = vm::onSearch,
-        onSelectClick = vm::onSelectClick
+        onSelectClick = vm::onSelectClick,
+        onAppClick = vm::onAppClick,
+        onSelectAllClick = vm::onSelectAllClick,
+        onDeselectAllClick = vm::onDeselectAllClick,
     )
 }
 
@@ -60,13 +65,19 @@ internal fun SelectAppsPackageView(
     onBackClick: () -> Unit,
     onSearch: (query: String) -> Unit,
     onSelectClick: () -> Unit,
+    onAppClick: (SelectableApp) -> Unit,
+    onSelectAllClick: () -> Unit,
+    onDeselectAllClick: () -> Unit,
 ) {
     AppIdScaffold(
         modifier = modifier,
         actionBar = {
             ActionBar(
+                state = state,
                 onBackClick = onBackClick,
-                onSearch = onSearch
+                onSearch = onSearch,
+                onSelectAllClick = onSelectAllClick,
+                onDeselectAllClick = onDeselectAllClick,
             )
         },
         bottomBar = {
@@ -76,22 +87,29 @@ internal fun SelectAppsPackageView(
                 BottomBarView(
                     modifier = Modifier
                         .padding(rememberImeAndNavBarInsetsPaddingValues()),
+                    state = state,
                     onSelectClick = onSelectClick
                 )
             }
         }
     ) {
-        AppsView(
-            Modifier
-                .clickable { }
-                .fillMaxSize(),
-            state = state,
-        )
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            AppsView(
+                Modifier
+                    .clickable(enabled = false) { }
+                    .fillMaxSize(),
+                state = state,
+                onAppClick = onAppClick
+            )
 
-        ErrorView(
-            error = error,
-            enterFromBottom = false
-        )
+            ErrorView(
+                error = error,
+                enterFromBottom = true
+            )
+        }
     }
 }
 

@@ -1,70 +1,50 @@
 package io.github.amanshuraikwar.appid.ui
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.IntOffset
 
 @Composable
 fun AppIdScaffold(
     modifier: Modifier = Modifier,
-    actionBar: @Composable BoxScope.() -> Unit,
-    bottomBar: @Composable BoxScope.() -> Unit,
-    content: @Composable BoxScope.() -> Unit
+    actionBar: @Composable () -> Unit,
+    bottomBar: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
-    Box(
+    Layout(
         modifier = modifier,
-    ) {
-        var searchBarHeight by remember { mutableStateOf(0) }
-        var bottomBarHeight by remember { mutableStateOf(0) }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = animateDpAsState(
-                        targetValue = with(LocalDensity.current) {
-                            searchBarHeight.toDp()
-                        }
-                    ).value,
-                    bottom = animateDpAsState(
-                        targetValue = with(LocalDensity.current) {
-                            bottomBarHeight.toDp()
-                        }
-                    ).value,
-                )
-        ) {
-            content()
-        }
-
-        Box(
-            modifier = Modifier.onSizeChanged {
-                searchBarHeight = it.height
-            }
-        ) {
+        content = {
             actionBar()
-        }
-
-        Box(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .onSizeChanged {
-                    bottomBarHeight = it.height
-                }
-        ) {
+            content()
             bottomBar()
+        }
+    ) { measurables, constraints ->
+        val actionBarPlaceable = measurables[0].measure(constraints.copy(minHeight = 0))
+        val bottomBarPlaceable = measurables[2].measure(constraints.copy(minHeight = 0))
+        val contentPlaceable = measurables[1].measure(
+            constraints.copy(
+                minHeight = 0,
+                maxHeight =
+                constraints.maxHeight - actionBarPlaceable.height - bottomBarPlaceable.height
+            )
+        )
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            actionBarPlaceable.place(
+                IntOffset(0, 0),
+                zIndex = 1f
+            )
+            contentPlaceable.place(
+                IntOffset(0, actionBarPlaceable.height),
+                zIndex = 0f
+            )
+            bottomBarPlaceable.place(
+                IntOffset(
+                    0,
+                    constraints.maxHeight - bottomBarPlaceable.height
+                ),
+                zIndex = 1f
+            )
         }
     }
 }

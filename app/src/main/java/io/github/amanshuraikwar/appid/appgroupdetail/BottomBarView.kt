@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.ui.ActionButton
+import io.github.amanshuraikwar.appid.ui.ProgressView
 
 @Composable
 internal fun BottomBarView(
@@ -42,8 +44,9 @@ internal fun BottomBarView(
                 is AppGroupDetailState.Success.DeletionInProgress -> state.progressText
                 is AppGroupDetailState.Success.Idle -> ""
             },
-            color = MaterialTheme.colors.onSurface,
-            style = MaterialTheme.typography.body2
+            color = MaterialTheme.colors.primary,
+            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.Medium
         )
 
         Box(

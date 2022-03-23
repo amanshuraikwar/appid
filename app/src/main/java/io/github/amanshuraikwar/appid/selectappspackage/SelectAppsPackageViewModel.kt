@@ -1,11 +1,14 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.amanshuraikwar.appid.CoroutinesDispatcherProvider
 import io.github.amanshuraikwar.appid.data.AppIdRepository
+import io.github.amanshuraikwar.appid.model.App
 import io.github.amanshuraikwar.appid.ui.UiError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -30,8 +33,8 @@ internal class SelectAppsPackageViewModel @Inject constructor(
     val state: StateFlow<SelectAppsPackageState> = _state
 
     private val _selectAppsFlow =
-        MutableStateFlow<SelectAppsPackageState.Success?>(null)
-    val selectAppsFlow: StateFlow<SelectAppsPackageState.Success?> = _selectAppsFlow
+        MutableStateFlow<List<App>?>(null)
+    val selectAppsFlow: StateFlow<List<App>?> = _selectAppsFlow
 
     private val _error = MutableSharedFlow<UiError?>(
         extraBufferCapacity = 2,
@@ -51,7 +54,61 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                 .collect { query ->
                     val apps = appIdRepository.getAllInstalledApps(query)
 
+                    // O(M+N) algo that propagates the
+                    // "T-1"th state's selection of common items to "T"th state
                     withContext(Dispatchers.Main.immediate) {
+                        val currentState = _state.value
+                        val currentSelectableApps: SnapshotStateList<SelectableApp> =
+                            if (currentState is SelectAppsPackageState.Success) {
+                                currentState.apps
+                            } else {
+                                SnapshotStateList()
+                            }
+
+                        var selectedAppCount = 0
+                        val selectableApps = SnapshotStateList<SelectableApp>()
+
+                        var i = 0
+                        var j = 0
+
+                        // only run until we exhaust new items
+                        // rest of the old items must be discarded
+                        while (i < apps.size) {
+                            if (j < currentSelectableApps.size) {
+                                if (apps[i] == currentSelectableApps[j].app) {
+                                    // for common items keep the selected state
+                                    selectableApps.add(currentSelectableApps[j])
+                                    if (currentSelectableApps[j].selected) {
+                                        selectedAppCount++
+                                    }
+                                    i++
+                                    j++
+                                } else if (apps[i] < currentSelectableApps[j].app) {
+                                    // new ith item will never be == current jth item
+                                    // so just add the new ith item as unselected
+                                    selectableApps.add(
+                                        SelectableApp(
+                                            selected = false,
+                                            app = apps[i]
+                                        )
+                                    )
+                                    i++
+                                } else {
+                                    // wait for current jth item to become >= new ith item
+                                    j++
+                                }
+                            } else {
+                                // we have exhausted current items
+                                selectableApps.add(
+                                    SelectableApp(
+                                        selected = false,
+                                        app = apps[i]
+                                    )
+                                )
+                                i++
+                            }
+                        }
+
                         _state.emit(
                             if (apps.isEmpty()) {
                                 SelectAppsPackageState.NoApps(
@@ -60,7 +117,8 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                             } else {
                                 SelectAppsPackageState.Success(
                                     packageName = query,
-                                    apps = apps,
+                                    apps = selectableApps,
+                                    selectedAppCount = mutableStateOf(selectedAppCount)
                                 )
                             }
                         )
@@ -70,6 +128,8 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                 }
         }
     }
+
+
 
     fun onSearch(query: String) {
         Log.d(TAG, "onSearch: $query")
@@ -87,21 +147,28 @@ internal class SelectAppsPackageViewModel @Inject constructor(
                 is SelectAppsPackageState.NoApps -> {
                     withContext(dispatcherProvider.main) {
                         _error.tryEmit(null)
-                        _error.tryEmit(UiError("There are not apps to select!"))
+                        _error.tryEmit(UiError("There are no selected apps."))
                         _error.tryEmit(null)
                     }
                 }
                 is SelectAppsPackageState.Success -> {
-                    when {
-                        currentState.apps.size > 20 -> {
-                            withContext(dispatcherProvider.main) {
+                    withContext(dispatcherProvider.main) {
+                        when {
+                            currentState.apps.count { it.selected } == 0 -> {
+
                                 _error.tryEmit(null)
-                                _error.tryEmit(UiError("We cannot select more than 20 apps!"))
+                                _error.tryEmit(UiError("There are no selected apps."))
                                 _error.tryEmit(null)
                             }
-                        }
-                        else -> {
-                            _selectAppsFlow.emit(currentState.copy())
+
+                            else -> {
+                                _selectAppsFlow.emit(
+                                    currentState.copy()
+                                        .apps
+                                        .filter { it.selected }
+                                        .map { it.app }
+                                )
+                            }
                         }
                     }
                 }
@@ -112,5 +179,70 @@ internal class SelectAppsPackageViewModel @Inject constructor(
     fun onDispose() {
         _selectAppsFlow.value = null
         _error.tryEmit(null)
+        _state.value = SelectAppsPackageState.Idle
+    }
+
+    fun onAppClick(clickedSelectableApp: SelectableApp) {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.main) {
+                val currentState = _state.value
+                if (currentState is SelectAppsPackageState.Success) {
+                    val index = currentState.apps.indexOfFirst { selectableApp ->
+                        selectableApp.app.packageName ==
+                                clickedSelectableApp.app.packageName
+                    }
+
+                    if (index == -1) {
+                        return@withContext
+                    }
+
+                    val currentSelectableApp = currentState.apps[index]
+                    currentState.apps[index] =
+                        currentSelectableApp.copy(
+                            selected = !currentSelectableApp.selected,
+                        )
+
+                    if (currentSelectableApp.selected) {
+                        currentState.selectedAppCount.value -= 1
+                    } else {
+                        currentState.selectedAppCount.value += 1
+                    }
+                }
+            }
+        }
+    }
+
+    fun onSelectAllClick() {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.main) {
+                val currentState = _state.value
+                if (currentState is SelectAppsPackageState.Success) {
+                    val apps = currentState.apps
+
+                    for (i in 0 until apps.size) {
+                        apps[i] = apps[i].copy(selected = true)
+                    }
+
+                    currentState.selectedAppCount.value = currentState.apps.size
+                }
+            }
+        }
+    }
+
+    fun onDeselectAllClick() {
+        viewModelScope.launch {
+            withContext(dispatcherProvider.main) {
+                val currentState = _state.value
+                if (currentState is SelectAppsPackageState.Success) {
+                    val apps = currentState.apps
+
+                    for (i in 0 until apps.size) {
+                        apps[i] = apps[i].copy(selected = false)
+                    }
+
+                    currentState.selectedAppCount.value = 0
+                }
+            }
+        }
     }
 }
