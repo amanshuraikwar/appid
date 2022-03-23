@@ -9,7 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.twotone.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -110,7 +110,7 @@ fun SearchBar(
                     }
                 )
                 .align(Alignment.CenterEnd),
-            imageVector = Icons.Rounded.Clear,
+            imageVector = Icons.TwoTone.Clear,
             contentDescription = "Clear",
             enabled = searchString.isNotEmpty(),
             onClick = {

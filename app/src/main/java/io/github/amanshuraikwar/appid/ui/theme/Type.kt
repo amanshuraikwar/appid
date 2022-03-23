@@ -24,7 +24,7 @@ private val RobotoSlabFontFamily = FontFamily(
 )
 
 val AppIdTypography = Typography(
-    defaultFontFamily = RubikFontFamily,
+    defaultFontFamily = RobotoSlabFontFamily,
     h5 = TextStyle(
         fontFamily = RobotoSlabFontFamily,
         fontWeight = FontWeight.Normal,
@@ -64,6 +64,12 @@ val AppIdTypography = Typography(
         fontSize = 16.sp,
         letterSpacing = 0.5.sp,
         lineHeight = 22.sp
+    ),
+    button = TextStyle(
+        fontFamily = RubikFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        letterSpacing = 1.25.sp
     ),
 )
 

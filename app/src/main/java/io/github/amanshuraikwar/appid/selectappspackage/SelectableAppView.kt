@@ -1,12 +1,6 @@
 package io.github.amanshuraikwar.appid.selectappspackage
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,13 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckBox
-import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,12 +22,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.amanshuraikwar.appid.ui.AppIconView
-import io.github.amanshuraikwar.appid.ui.theme.disabled
 import io.github.amanshuraikwar.appid.ui.theme.outline
 import io.github.amanshuraikwar.appid.ui.theme.packageName
 
-@Suppress("OPT_IN_IS_NOT_ENABLED")
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun SelectableAppView(
     modifier: Modifier = Modifier,
@@ -109,33 +97,14 @@ internal fun SelectableAppView(
             }
 
 
-            Icon(
+            Checkbox(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    //.background(MaterialTheme.colors.primary.disabled)
-                    //.padding(8.dp)
-                    .size(24.dp),
-                imageVector = Icons.Rounded.CheckBoxOutlineBlank,
-                contentDescription = "Checked Outline",
-                tint = MaterialTheme.colors.onSurface
+                    .align(Alignment.CenterEnd),
+                checked = selectableApp.selected,
+                onCheckedChange = {
+                    onClick?.invoke()
+                },
             )
-
-            AnimatedVisibility(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                visible = selectableApp.selected,
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut()
-            ) {
-                Icon(
-                    modifier = Modifier
-                        //.background(MaterialTheme.colors.primary.disabled)
-                        //.padding(8.dp)
-                        .size(24.dp),
-                    imageVector = Icons.Rounded.CheckBox,
-                    contentDescription = "Checked",
-                    tint = MaterialTheme.colors.primary
-                )
-            }
         }
     }
 }

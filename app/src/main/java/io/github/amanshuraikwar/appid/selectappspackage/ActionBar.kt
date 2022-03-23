@@ -15,9 +15,9 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Deselect
-import androidx.compose.material.icons.rounded.SelectAll
+import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.Deselect
+import androidx.compose.material.icons.twotone.SelectAll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -162,7 +162,7 @@ internal fun ActionBar(
                     .acmStatusBarsPadding()
                     .align(Alignment.CenterStart)
                     .padding(4.dp),
-                imageVector = Icons.Rounded.ArrowBack,
+                imageVector = Icons.TwoTone.ArrowBack,
                 contentDescription = "Back",
                 onClick = onBackClick
             )
@@ -179,7 +179,7 @@ internal fun ActionBar(
                     IconButton(
                         modifier = Modifier
                             .padding(4.dp),
-                        imageVector = Icons.Rounded.SelectAll,
+                        imageVector = Icons.TwoTone.SelectAll,
                         contentDescription = "Select All",
                         onClick = onSelectAllClick
                     )
@@ -196,7 +196,7 @@ internal fun ActionBar(
                     IconButton(
                         modifier = Modifier
                             .padding(4.dp),
-                        imageVector = Icons.Rounded.Deselect,
+                        imageVector = Icons.TwoTone.Deselect,
                         contentDescription = "Deselect All",
                         onClick = onDeselectAllClick
                     )

@@ -52,7 +52,7 @@ internal class AppGroupDetailViewModel @Inject constructor(
             } else {
                 _state.value = AppGroupDetailState.Success.Idle(
                     appGroup = appGroup,
-                    appDisplayType = AppGroupDetailState.AppDisplayType.GRID
+                    appDisplayType = AppGroupDetailState.AppDisplayType.LIST
                 )
             }
         }

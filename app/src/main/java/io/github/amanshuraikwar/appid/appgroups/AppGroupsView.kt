@@ -8,15 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Outlet
+import androidx.compose.material.icons.twotone.Outlet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.amanshuraikwar.appid.ui.ProgressView
 import io.github.amanshuraikwar.appid.ui.EmptyStateView
+import io.github.amanshuraikwar.appid.ui.ProgressView
 
 @Composable
 fun AppGroupsView(
@@ -82,7 +82,7 @@ internal fun AppGroupsView(
                 modifier = modifier
                     .padding(paddingValues)
                     .fillMaxSize(),
-                imageVector = Icons.Rounded.Outlet,
+                imageVector = Icons.TwoTone.Outlet,
                 contentDescription = "No App Groups",
                 title = "Nothing to see here",
                 description = "Create an app group and it will show up here",

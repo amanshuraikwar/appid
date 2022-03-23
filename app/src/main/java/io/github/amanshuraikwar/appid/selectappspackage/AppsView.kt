@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CatchingPokemon
+import androidx.compose.material.icons.twotone.CatchingPokemon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -59,7 +59,7 @@ internal fun AppsView(
                 EmptyStateView(
                     modifier = modifier
                         .fillMaxSize(),
-                    imageVector = Icons.Rounded.CatchingPokemon,
+                    imageVector = Icons.TwoTone.CatchingPokemon,
                     contentDescription = "No apps found",
                     title = "No apps found",
                     description = "Try searching for another app package name",

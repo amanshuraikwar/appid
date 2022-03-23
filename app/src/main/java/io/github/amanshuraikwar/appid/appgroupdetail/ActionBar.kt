@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.GridView
-import androidx.compose.material.icons.rounded.ViewList
+import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -23,6 +21,7 @@ import io.github.amanshuraikwar.appid.ui.ActionBarView
 import io.github.amanshuraikwar.appid.ui.IconButton
 import io.github.amanshuraikwar.appid.ui.rememberAppIdIndication
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun ActionBar(
     state: AppGroupDetailState,
@@ -47,13 +46,15 @@ fun ActionBar(
                     IconButton(
                         modifier = Modifier
                             .padding(horizontal = 4.dp, vertical = 4.dp),
-                        imageVector = Icons.Rounded.ArrowBack,
+                        imageVector = Icons.TwoTone.ArrowBack,
                         contentDescription = "Back",
                         onClick = onBackClick,
                         foregroundColor = MaterialTheme.colors.primary
                     )
 
                     if (state is AppGroupDetailState.Success) {
+                        // commenting this feature out due to performance issues
+                        /*
                         IconButton(
                             modifier = Modifier
                                 .padding(end = 56.dp)
@@ -61,10 +62,10 @@ fun ActionBar(
                                 .align(Alignment.CenterEnd),
                             imageVector = when (state.appDisplayType) {
                                 AppGroupDetailState.AppDisplayType.GRID -> {
-                                    Icons.Rounded.GridView
+                                    Icons.TwoTone.GridView
                                 }
                                 AppGroupDetailState.AppDisplayType.LIST -> {
-                                    Icons.Rounded.ViewList
+                                    Icons.TwoTone.ViewList
                                 }
                             },
                             contentDescription = "Grid View",
@@ -74,12 +75,13 @@ fun ActionBar(
                                 AppGroupDetailState.AppDisplayType.LIST -> onGridViewClick
                             }
                         )
+                         */
 
                         IconButton(
                             modifier = Modifier
                                 .padding(horizontal = 4.dp, vertical = 4.dp)
                                 .align(Alignment.CenterEnd),
-                            imageVector = Icons.Rounded.Delete,
+                            imageVector = Icons.TwoTone.Delete,
                             contentDescription = "Delete",
                             onClick = {
                                 onDeleteAppGroupClick(state.appGroup)

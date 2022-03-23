@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.graphics.toArgb
 import coil.Coil
 import coil.ImageLoader
 import kotlinx.coroutines.Dispatchers

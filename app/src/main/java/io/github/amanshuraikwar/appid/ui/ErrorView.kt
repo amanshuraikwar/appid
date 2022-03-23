@@ -16,7 +16,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.twotone.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -82,7 +82,7 @@ fun ErrorView(
                         .align(Alignment.CenterVertically)
                         .padding(16.dp)
                         .size(24.dp),
-                    imageVector = Icons.Rounded.Error,
+                    imageVector = Icons.TwoTone.Error,
                     contentDescription = "Error",
                     tint = MaterialTheme.colors.error
                 )

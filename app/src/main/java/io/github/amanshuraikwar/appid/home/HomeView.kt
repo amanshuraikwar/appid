@@ -19,7 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.twotone.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import io.github.amanshuraikwar.appid.about.AboutView2
+import io.github.amanshuraikwar.appid.about.AboutView
 import io.github.amanshuraikwar.appid.acmNavigationBarsPadding
 import io.github.amanshuraikwar.appid.appgroupdetail.AppGroupDetailView
 import io.github.amanshuraikwar.appid.appgroups.AppGroupsView
@@ -102,7 +102,7 @@ fun HomeView() {
                 onClick = vm::onCreateAppGroupClick
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Add,
+                    imageVector = Icons.TwoTone.Add,
                     contentDescription = "Add",
                     tint = MaterialTheme.colors.onPrimary,
                     modifier = Modifier
@@ -157,44 +157,13 @@ fun HomeView() {
                     },
                 )
             }
-//            AnimatedVisibility(
-//                visible = state is HomeViewState.AppGroupDetail,
-//                enter = slideInVertically {
-//                    it
-//                },
-//                exit = slideOutVertically {
-//                    it
-//                }
-//            ) {
-//                LaunchedEffect(key1 = transition.currentState) {
-//                    if (transition.currentState == EnterExitState.Visible) {
-//                        id = (state as? HomeViewState.AppGroupDetail)?.id
-//                    }
-//                    if (transition.currentState == EnterExitState.PostExit) {
-//                        id = null
-//                    }
-//                }
-//
-//                AppGroupDetailView(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .background(MaterialTheme.colors.background),
-//                    id = id,
-//                    onBackClick = {
-//                        vm.onReturnedFromAppDetails(
-//                            appGroupId = (state as HomeViewState.AppGroupDetail).id
-//                        )
-//                        vm.onBackClick()
-//                    },
-//                )
-//            }
         }
 
         SwipeDismissView(
             visible = state == HomeViewState.About,
             onDismiss = vm::onBackClick
         ) { modifier, _ ->
-            AboutView2(
+            AboutView(
                 modifier,
                 vm::onBackClick
             )

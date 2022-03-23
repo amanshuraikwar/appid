@@ -20,7 +20,6 @@ import io.github.amanshuraikwar.appid.ui.swipe.SwipeAction
 import io.github.amanshuraikwar.appid.ui.swipe.SwipeableActionsBox
 import io.github.amanshuraikwar.appid.ui.theme.onRemove
 import io.github.amanshuraikwar.appid.ui.theme.remove
-import java.util.*
 
 @Composable
 internal fun AppGroupItemView(
@@ -60,7 +59,7 @@ internal fun AppGroupItemView(
             ) {
                 Text(
 
-                    text = appGroup.name.uppercase(Locale.getDefault()),
+                    text = appGroup.name,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier
                         .fillMaxWidth()
